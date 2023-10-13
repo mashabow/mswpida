@@ -1,0 +1,11 @@
+{
+  "name": "@mashabow/aspida-msw",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@8.9.0"
+}
