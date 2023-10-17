@@ -18,6 +18,11 @@ module.exports = {
     },
   },
   reportUnusedDisableDirectives: true,
+  rules: {
+    // default export ではなく named export を使う
+    'import/prefer-default-export': 'off',
+    'import/no-default-export': 'error',
+  },
   overrides: [
     {
       extends: ['plugin:@typescript-eslint/disable-type-checked'],
