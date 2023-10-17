@@ -22,6 +22,10 @@ module.exports = {
     // default export ではなく named export を使う
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
+
+    // typescript-eslint のルールの方が正確
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'error',
   },
   overrides: [
     {
