@@ -25,5 +25,10 @@
     "openapi2aspida": "^0.23.2",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "tsconfig-paths": "^4.0.0"
+    }
   }
 }
