@@ -2,6 +2,7 @@
   "name": "@mashabow/aspida-msw",
   "version": "0.0.1",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint:tsc": "tsc --noEmit",
     "lint:prettier": "prettier --check .",
