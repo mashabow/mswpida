@@ -7,7 +7,8 @@
     "lint:tsc": "tsc --noEmit",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate:example-api": "openapi2aspida -i https://raw.githubusercontent.com/swagger-api/swagger-petstore/swagger-petstore-v3-1.0.17/src/main/resources/openapi.yaml -o ./example/generated-api"
   },
   "author": "",
   "license": "MIT",
@@ -20,6 +21,7 @@
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.28.1",
+    "openapi2aspida": "^0.23.2",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }
