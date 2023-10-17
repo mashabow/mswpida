@@ -20,6 +20,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^6.8.0
     version: 6.8.0(eslint@8.51.0)(typescript@5.2.2)
+  aspida:
+    specifier: ^1.14.0
+    version: 1.14.0
   eslint:
     specifier: ^8.51.0
     version: 8.51.0

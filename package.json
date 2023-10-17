@@ -18,6 +18,7 @@
     "@tsconfig/strictest": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
+    "aspida": "^1.14.0",
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -30,5 +31,8 @@
     "overrides": {
       "tsconfig-paths": "^4.0.0"
     }
+  },
+  "peerDependencies": {
+    "aspida": "^1.14.0"
   }
 }
