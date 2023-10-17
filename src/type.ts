@@ -1,4 +1,4 @@
-import type { LowerHttpMethod } from 'aspida';
+import type { AspidaClient, LowerHttpMethod } from 'aspida';
 
 // api
 
@@ -8,14 +8,22 @@ type PathParamFunction =
 
 type Endpoint = { $path: () => string } & {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  [K in LowerHttpMethod | `$${LowerHttpMethod}`]?: () => Promise<unknown>;
+  [K in LowerHttpMethod | `$${LowerHttpMethod}`]?: (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    option?: any,
+  ) => Promise<unknown>;
 };
 
 type NonEndpoint = {
   [K in string]: ApiStructure | PathParamFunction;
 };
 
-type ApiStructure = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
+export type ApiStructure = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
+
+export type AspidaApi<T extends ApiStructure> = ({
+  baseURL,
+  fetch,
+}: AspidaClient<unknown>) => T;
 
 // mock
 
@@ -47,4 +55,5 @@ type MockNonEndpoint<T extends ApiStructure> = {
     : never;
 };
 
-type MockApi<T extends ApiStructure> = MockNonEndpoint<T> & MockEndpoint<T>;
+export type MockApi<T extends ApiStructure> = MockNonEndpoint<T> &
+  MockEndpoint<T>;
