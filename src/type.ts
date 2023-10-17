@@ -47,6 +47,7 @@ type MockNonEndpointKey<T extends ApiStructure> = Exclude<
   keyof T,
   keyof Endpoint
 >;
+
 type MockNonEndpoint<T extends ApiStructure> = {
   [K in MockNonEndpointKey<T>]: T[K] extends ApiStructure
     ? MockApi<T[K]>
