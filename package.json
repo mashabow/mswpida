@@ -20,6 +20,7 @@
     "@typescript-eslint/parser": "^6.8.0",
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.28.1",
     "openapi2aspida": "^0.23.2",
     "prettier": "^3.0.3",

@@ -4,6 +4,7 @@ module.exports = {
   extends: [
     'airbnb-base',
     'plugin:@typescript-eslint/recommended-type-checked',
+    'plugin:import/typescript',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -11,6 +12,11 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint'],
+  settings: {
+    'import/resolver': {
+      typescript: true,
+    },
+  },
   reportUnusedDisableDirectives: true,
   overrides: [
     {
