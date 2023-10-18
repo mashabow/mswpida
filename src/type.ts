@@ -6,7 +6,7 @@ type PathParamFunction =
   | ((param: string) => ApiStructure)
   | ((param: number) => ApiStructure);
 
-type Endpoint = { $path: () => string } & {
+export type Endpoint = { $path: () => string } & {
   [K in LowerHttpMethod | `$${LowerHttpMethod}`]?: (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     option?: any,

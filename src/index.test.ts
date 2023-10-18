@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { RestHandler } from 'msw';
 import { createMock } from './index.js';
 import { AspidaApi } from './type.js';
 
@@ -71,5 +72,34 @@ describe('createMock', () => {
         `${baseURL}/items/:itemId/variants/:variantId`,
       );
     });
+  });
+
+  test('エンドポイントの request handler を $get() などで作成できる', () => {
+    const api = (({ baseURL: _baseURL }) => ({
+      items: {
+        _itemId: (itemId: string) => ({
+          $get: () => Promise.resolve(''),
+          $path: () => `${_baseURL}/items/${itemId}`,
+          variants: {
+            $get: () => Promise.resolve(''),
+            $path: () => `${_baseURL}/items/${itemId}/variants`,
+            _variantId: (variantId: number) => ({
+              $get: () => Promise.resolve(''),
+              $path: () => `${_baseURL}/items/${itemId}/variants/${variantId}`,
+            }),
+          },
+        }),
+      },
+    })) satisfies AspidaApi;
+    const mock = createMock(api, baseURL);
+
+    const handler = mock.items
+      ._itemId()
+      .variants._variantId()
+      .$get((req, res, ctx) =>
+        res.once(ctx.status(200), ctx.json({ foo: 'bar' })),
+      );
+
+    expect(handler).toBeInstanceOf(RestHandler);
   });
 });

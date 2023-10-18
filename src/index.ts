@@ -1,6 +1,6 @@
-import { rest } from 'msw';
+import { ResponseResolver, rest } from 'msw';
 import { LowerHttpMethod } from 'aspida';
-import { ApiStructure, AspidaApi, MockApi } from './type.js';
+import { ApiStructure, AspidaApi, Endpoint, MockApi } from './type.js';
 
 const METHODS = [
   'get',
@@ -21,13 +21,6 @@ const $METHODS = [
   '$options',
 ] satisfies `$${LowerHttpMethod}`[];
 
-function isMethod(key: string): key is LowerHttpMethod | `$${LowerHttpMethod}` {
-  return (
-    METHODS.includes(key as LowerHttpMethod) ||
-    $METHODS.includes(key as `$${LowerHttpMethod}`)
-  );
-}
-
 function createMockFromApiStructure<T extends ApiStructure>(
   apiStructure: T,
 ): MockApi<T> {
@@ -37,8 +30,18 @@ function createMockFromApiStructure<T extends ApiStructure>(
         return { ...acc, $path: value };
       }
 
-      if (isMethod(key)) {
-        // TODO: メソッドのモックを作る
+      if ($METHODS.includes(key as `$${LowerHttpMethod}`)) {
+        // そのメソッドのモック生成関数を返す
+        const method = key.substring(1) as LowerHttpMethod;
+        const path = (apiStructure as Endpoint).$path();
+        return {
+          ...acc,
+          [key]: (resolver: ResponseResolver) => rest[method](path, resolver),
+        };
+      }
+
+      if (METHODS.includes(key as LowerHttpMethod)) {
+        // `$` 無しのメソッドは、モックには用意しない
         return acc;
       }
 
