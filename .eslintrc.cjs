@@ -19,9 +19,15 @@ module.exports = {
   },
   reportUnusedDisableDirectives: true,
   rules: {
+    // aspida で頻出するので無効化
+    'no-underscore-dangle': 'off',
+
     // default export ではなく named export を使う
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
+
+    // ESM 非対応。tsc でチェックできているので無効化
+    'import/extensions': 'off',
 
     // typescript-eslint のルールの方が正確
     'no-use-before-define': 'off',
@@ -30,7 +36,17 @@ module.exports = {
   overrides: [
     {
       extends: ['plugin:@typescript-eslint/disable-type-checked'],
-      files: ['./**/*.cjs'],
+      files: ['**/*.cjs'],
+    },
+    {
+      // テストファイルでは devDependencies からの import を許可
+      rules: {
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
+      },
+      files: ['**/*.test.*'],
     },
   ],
 };
