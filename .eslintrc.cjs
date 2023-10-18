@@ -30,7 +30,17 @@ module.exports = {
   overrides: [
     {
       extends: ['plugin:@typescript-eslint/disable-type-checked'],
-      files: ['./**/*.cjs'],
+      files: ['**/*.cjs'],
+    },
+    {
+      // テストファイルでは devDependencies からの import を許可
+      rules: {
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
+      },
+      files: ['**/*.test.*'],
     },
   ],
 };
