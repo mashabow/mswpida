@@ -5,6 +5,7 @@ module.exports = {
     'airbnb-base',
     'plugin:@typescript-eslint/recommended-type-checked',
     'plugin:import/typescript',
+    'prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
