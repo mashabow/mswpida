@@ -21,9 +21,15 @@ function createMockFromApiStructure<T extends ApiStructure>(
     if (key === '$path') {
       return { ...acc, $path: apiStructure.$path };
     }
-    // TODO: メソッドのモックを作る
-    // TODO: サブディレクトリのモックを再帰的に作る
-    return acc;
+
+    if (apiStructure[key] instanceof Function) {
+      // メソッド or パスパラメータ
+      // TODO: メソッドのモックを作る or パスパラメータ以下のモックを再帰的に作る
+      return acc;
+    }
+
+    // サブパスのモックを再帰的に作る
+    return { ...acc, [key]: createMockFromApiStructure(apiStructure[key]) };
   }, {} as MockApi<T>);
 }
 
