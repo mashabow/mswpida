@@ -7,7 +7,6 @@ type PathParamFunction =
   | ((param: number) => ApiStructure);
 
 type Endpoint = { $path: () => string } & {
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   [K in LowerHttpMethod | `$${LowerHttpMethod}`]?: (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     option?: any,
@@ -20,7 +19,7 @@ type NonEndpoint = {
 
 export type ApiStructure = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
 
-export type AspidaApi<T extends ApiStructure> = ({
+export type AspidaApi<T extends ApiStructure = ApiStructure> = ({
   baseURL,
   fetch,
 }: AspidaClient<unknown>) => T;
