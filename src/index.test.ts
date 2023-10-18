@@ -42,5 +42,34 @@ describe('createMock', () => {
       // hoge にはエンドポイントがないので、$path は存在しない
       expect(mock.hoge).not.toHaveProperty('$path');
     });
+
+    test('パスパラメータを含む場合', () => {
+      const api = (({ baseURL: _baseURL }) => ({
+        items: {
+          _itemId: (itemId: string) => ({
+            $get: () => Promise.resolve(''),
+            $path: () => `${_baseURL}/items/${itemId}`,
+            variants: {
+              $get: () => Promise.resolve(''),
+              $path: () => `${_baseURL}/items/${itemId}/variants`,
+              _variantId: (variantId: number) => ({
+                $get: () => Promise.resolve(''),
+                $path: () =>
+                  `${_baseURL}/items/${itemId}/variants/${variantId}`,
+              }),
+            },
+          }),
+        },
+      })) satisfies AspidaApi;
+      const mock = createMock(api, baseURL);
+
+      expect(mock.items._itemId().$path()).toEqual(`${baseURL}/items/:itemId`);
+      expect(mock.items._itemId().variants.$path()).toEqual(
+        `${baseURL}/items/:itemId/variants`,
+      );
+      expect(mock.items._itemId().variants._variantId().$path()).toEqual(
+        `${baseURL}/items/:itemId/variants/:variantId`,
+      );
+    });
   });
 });

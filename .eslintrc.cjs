@@ -19,6 +19,9 @@ module.exports = {
   },
   reportUnusedDisableDirectives: true,
   rules: {
+    // aspida で頻出するので無効化
+    'no-underscore-dangle': 'off',
+
     // default export ではなく named export を使う
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
