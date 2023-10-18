@@ -1,10 +1,22 @@
-import { ApiStructure, AspidaApi, MockApi } from './type.js';
 import { rest } from 'msw';
+import { ApiStructure, AspidaApi, MockApi } from './type.js';
+
+function createMockFromApiStructure<T extends ApiStructure>(
+  apiStructure: T,
+): MockApi<T> {
+  // TODO
+  return apiStructure;
+}
 
 export function createMock<T extends ApiStructure>(
   api: AspidaApi<T>,
   baseURL?: string,
 ): MockApi<T> {
-  // TODO: rest を使って mock を作る
-  return 'TODO';
+  const apiStructure = api({
+    baseURL,
+    // @ts-expect-error 使わないので適当な関数を渡しておく
+    fetch: () => 'dummy',
+  });
+
+  return createMockFromApiStructure(apiStructure);
 }
