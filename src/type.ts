@@ -1,4 +1,9 @@
-import type { AspidaClient, LowerHttpMethod } from 'aspida';
+import type {
+  AspidaClient,
+  AspidaParams,
+  AspidaResponse,
+  LowerHttpMethod,
+} from 'aspida';
 import { ResponseResolver, RestHandler, RestRequest } from 'msw';
 
 // api
@@ -7,12 +12,15 @@ type PathParamFunction =
   | ((param: string) => ApiStructure)
   | ((param: number) => ApiStructure);
 
-export type Endpoint = { $path: () => string } & {
-  [K in LowerHttpMethod | `$${LowerHttpMethod}`]?: (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    option?: any,
-  ) => Promise<unknown>;
-};
+type MethodFetch = (option: Required<AspidaParams>) => Promise<AspidaResponse>;
+type $MethodFetch = (
+  option: Required<AspidaParams>,
+) => Promise<AspidaResponse['body']>;
+
+export type Endpoint = Partial<Record<LowerHttpMethod, MethodFetch>> &
+  Partial<Record<`$${LowerHttpMethod}`, $MethodFetch>> & {
+    $path: () => string;
+  };
 
 type NonEndpoint = {
   [K in string]: ApiStructure | PathParamFunction;
