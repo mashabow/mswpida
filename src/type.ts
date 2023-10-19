@@ -4,7 +4,7 @@ import type {
   AspidaResponse,
   LowerHttpMethod,
 } from 'aspida';
-import { ResponseResolver, RestHandler, RestRequest } from 'msw';
+import { ResponseResolver, RestContext, RestHandler, RestRequest } from 'msw';
 
 export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
@@ -43,14 +43,21 @@ type MockPathParamFunction<T extends PathParamFunction> = () => MockApi<
 
 type MockMethod<T extends ApiStructure> = Extract<keyof T, $LowerHttpMethod>;
 
-type HandlerCreator<T> = // TODO: T[K] からリクエストの型を抽出して、RestRequest の型パラメータ RequestBody に渡す
-  // RestRequest<RequestBody extends DefaultBodyType = DefaultBodyType, RequestParams extends PathParams = PathParams>
-  // TODO: T[K] からレスポンスの型を抽出して、ResponseResolver の型パラメータ BodyType に渡す
-  // ResponseResolver<RequestType = MockedRequest, ContextType = typeof defaultContext, BodyType extends DefaultBodyType = any>
-  (resolver: ResponseResolver<RestRequest>) => RestHandler;
+type RequestBodyOf<T extends $MethodFetch> = Parameters<T>[0]['body'];
+type ResponseBodyOf<T extends $MethodFetch> = Awaited<ReturnType<T>>;
+
+type HandlerCreator<T extends $MethodFetch> = (
+  resolver: ResponseResolver<
+    RestRequest<RequestBodyOf<T>>, // TODO: パスパラメータの型 RequestParams を定義する
+    RestContext,
+    ResponseBodyOf<T>
+  >,
+) => RestHandler;
 
 type MockEndpoint<T extends ApiStructure> = {
-  [K in MockMethod<T>]: HandlerCreator<T[K]>;
+  [K in MockMethod<T>]: T[K] extends $MethodFetch
+    ? HandlerCreator<T[K]>
+    : never;
 } & { $path: () => string };
 
 type MockNonEndpointKey<T extends ApiStructure> = Exclude<
