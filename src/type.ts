@@ -6,6 +6,8 @@ import type {
 } from 'aspida';
 import { ResponseResolver, RestHandler, RestRequest } from 'msw';
 
+export type $LowerHttpMethod = `$${LowerHttpMethod}`;
+
 // api
 
 type PathParamFunction =
@@ -18,7 +20,7 @@ type $MethodFetch = (
 ) => Promise<AspidaResponse['body']>;
 
 export type Endpoint = Partial<Record<LowerHttpMethod, MethodFetch>> &
-  Partial<Record<`$${LowerHttpMethod}`, $MethodFetch>> & {
+  Partial<Record<$LowerHttpMethod, $MethodFetch>> & {
     $path: () => string;
   };
 
