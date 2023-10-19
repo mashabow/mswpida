@@ -1,17 +1,31 @@
-import type { AspidaClient, LowerHttpMethod } from 'aspida';
+import type {
+  AspidaClient,
+  AspidaParams,
+  AspidaResponse,
+  LowerHttpMethod,
+} from 'aspida';
+import type {
+  ResponseResolver,
+  RestContext,
+  RestHandler,
+  RestRequest,
+} from 'msw';
+
+export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
 // api
+
+type MethodFetch = (option: Required<AspidaParams>) => Promise<AspidaResponse>;
+type $MethodFetch = (option: Required<AspidaParams>) => Promise<unknown>;
+
+export type Endpoint = Partial<Record<LowerHttpMethod, MethodFetch>> &
+  Partial<Record<$LowerHttpMethod, $MethodFetch>> & {
+    $path: () => string;
+  };
 
 type PathParamFunction =
   | ((param: string) => ApiStructure)
   | ((param: number) => ApiStructure);
-
-type Endpoint = { $path: () => string } & {
-  [K in LowerHttpMethod | `$${LowerHttpMethod}`]?: (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    option?: any,
-  ) => Promise<unknown>;
-};
 
 type NonEndpoint = {
   [K in string]: ApiStructure | PathParamFunction;
@@ -26,21 +40,28 @@ export type AspidaApi<T extends ApiStructure = ApiStructure> = ({
 
 // mock
 
+type MockMethod<T extends ApiStructure> = Extract<keyof T, $LowerHttpMethod>;
+
+type RequestBodyOf<T extends $MethodFetch> = Parameters<T>[0]['body'];
+type ResponseBodyOf<T extends $MethodFetch> = Awaited<ReturnType<T>>;
+
+type HandlerCreator<T extends $MethodFetch> = (
+  resolver: ResponseResolver<
+    RestRequest<RequestBodyOf<T>>, // TODO: パスパラメータの型 RequestParams を定義する
+    RestContext,
+    ResponseBodyOf<T>
+  >,
+) => RestHandler;
+
+type MockEndpoint<T extends ApiStructure> = {
+  [K in MockMethod<T>]: T[K] extends $MethodFetch
+    ? HandlerCreator<T[K]>
+    : never;
+} & { $path: () => string };
+
 type MockPathParamFunction<T extends PathParamFunction> = () => MockApi<
   ReturnType<T>
 >;
-
-type MockEndpointKey<T extends ApiStructure> = Exclude<
-  Extract<keyof T, keyof Endpoint>,
-  LowerHttpMethod
->;
-
-type MockEndpoint<T extends ApiStructure> = {
-  [K in MockEndpointKey<T>]: K extends '$path'
-    ? () => string
-    : // TODO: T[K] からリクエストの型とレスポンスの型を抽出する
-      () => string;
-};
 
 type MockNonEndpointKey<T extends ApiStructure> = Exclude<
   keyof T,
