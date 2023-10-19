@@ -4,7 +4,12 @@ import type {
   AspidaResponse,
   LowerHttpMethod,
 } from 'aspida';
-import { ResponseResolver, RestContext, RestHandler, RestRequest } from 'msw';
+import type {
+  ResponseResolver,
+  RestContext,
+  RestHandler,
+  RestRequest,
+} from 'msw';
 
 export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
