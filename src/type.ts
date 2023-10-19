@@ -10,10 +10,6 @@ export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
 // api
 
-type PathParamFunction =
-  | ((param: string) => ApiStructure)
-  | ((param: number) => ApiStructure);
-
 type MethodFetch = (option: Required<AspidaParams>) => Promise<AspidaResponse>;
 type $MethodFetch = (
   option: Required<AspidaParams>,
@@ -23,6 +19,10 @@ export type Endpoint = Partial<Record<LowerHttpMethod, MethodFetch>> &
   Partial<Record<$LowerHttpMethod, $MethodFetch>> & {
     $path: () => string;
   };
+
+type PathParamFunction =
+  | ((param: string) => ApiStructure)
+  | ((param: number) => ApiStructure);
 
 type NonEndpoint = {
   [K in string]: ApiStructure | PathParamFunction;
@@ -36,10 +36,6 @@ export type AspidaApi<T extends ApiStructure = ApiStructure> = ({
 }: AspidaClient<unknown>) => T;
 
 // mock
-
-type MockPathParamFunction<T extends PathParamFunction> = () => MockApi<
-  ReturnType<T>
->;
 
 type MockMethod<T extends ApiStructure> = Extract<keyof T, $LowerHttpMethod>;
 
@@ -59,6 +55,10 @@ type MockEndpoint<T extends ApiStructure> = {
     ? HandlerCreator<T[K]>
     : never;
 } & { $path: () => string };
+
+type MockPathParamFunction<T extends PathParamFunction> = () => MockApi<
+  ReturnType<T>
+>;
 
 type MockNonEndpointKey<T extends ApiStructure> = Exclude<
   keyof T,
