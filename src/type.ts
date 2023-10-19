@@ -1,4 +1,5 @@
 import type { AspidaClient, LowerHttpMethod } from 'aspida';
+import { ResponseResolver, RestHandler, RestRequest } from 'msw';
 
 // api
 
@@ -35,11 +36,16 @@ type MockEndpointKey<T extends ApiStructure> = Exclude<
   LowerHttpMethod
 >;
 
+type HandlerCreator<T> = // TODO: T[K] からリクエストの型を抽出して、RestRequest の型パラメータ RequestBody に渡す
+  // RestRequest<RequestBody extends DefaultBodyType = DefaultBodyType, RequestParams extends PathParams = PathParams>
+  // TODO: T[K] からレスポンスの型を抽出して、ResponseResolver の型パラメータ BodyType に渡す
+  // ResponseResolver<RequestType = MockedRequest, ContextType = typeof defaultContext, BodyType extends DefaultBodyType = any>
+  (resolver: ResponseResolver<RestRequest>) => RestHandler;
+
 type MockEndpoint<T extends ApiStructure> = {
   [K in MockEndpointKey<T>]: K extends '$path'
     ? () => string
-    : // TODO: T[K] からリクエストの型とレスポンスの型を抽出する
-      () => string;
+    : HandlerCreator<T[K]>;
 };
 
 type MockNonEndpointKey<T extends ApiStructure> = Exclude<
