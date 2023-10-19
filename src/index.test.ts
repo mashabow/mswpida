@@ -78,13 +78,13 @@ describe('createMock', () => {
     const api = (({ baseURL: _baseURL }) => ({
       items: {
         _itemId: (itemId: string) => ({
-          $get: () => Promise.resolve(''),
+          $get: () => Promise.resolve({ foo: 'bar' }),
           $path: () => `${_baseURL}/items/${itemId}`,
           variants: {
-            $get: () => Promise.resolve(''),
+            $get: () => Promise.resolve({ foo: 'bar' }),
             $path: () => `${_baseURL}/items/${itemId}/variants`,
             _variantId: (variantId: number) => ({
-              $get: () => Promise.resolve(''),
+              $get: () => Promise.resolve({ foo: 'bar' }),
               $path: () => `${_baseURL}/items/${itemId}/variants/${variantId}`,
             }),
           },
@@ -92,12 +92,11 @@ describe('createMock', () => {
       },
     })) satisfies AspidaApi;
     const mock = createMock(api, baseURL);
-
     const handler = mock.items
       ._itemId()
       .variants._variantId()
       .$get((req, res, ctx) =>
-        res.once(ctx.status(200), ctx.json({ foo: 'bar' })),
+        res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
       );
 
     expect(handler).toBeInstanceOf(RestHandler);
