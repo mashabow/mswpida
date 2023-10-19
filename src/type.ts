@@ -41,10 +41,7 @@ type MockPathParamFunction<T extends PathParamFunction> = () => MockApi<
   ReturnType<T>
 >;
 
-type MockEndpointKey<T extends ApiStructure> = Exclude<
-  Extract<keyof T, keyof Endpoint>,
-  LowerHttpMethod
->;
+type MockMethod<T extends ApiStructure> = Extract<keyof T, $LowerHttpMethod>;
 
 type HandlerCreator<T> = // TODO: T[K] からリクエストの型を抽出して、RestRequest の型パラメータ RequestBody に渡す
   // RestRequest<RequestBody extends DefaultBodyType = DefaultBodyType, RequestParams extends PathParams = PathParams>
@@ -53,10 +50,8 @@ type HandlerCreator<T> = // TODO: T[K] からリクエストの型を抽出し�
   (resolver: ResponseResolver<RestRequest>) => RestHandler;
 
 type MockEndpoint<T extends ApiStructure> = {
-  [K in MockEndpointKey<T>]: K extends '$path'
-    ? () => string
-    : HandlerCreator<T[K]>;
-};
+  [K in MockMethod<T>]: HandlerCreator<T[K]>;
+} & { $path: () => string };
 
 type MockNonEndpointKey<T extends ApiStructure> = Exclude<
   keyof T,
