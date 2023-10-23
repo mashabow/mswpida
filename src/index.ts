@@ -69,7 +69,7 @@ function createMockFromApiStructure<T extends ApiStructure>(
   }, {} as MockApi<T>);
 }
 
-export function createMock<T extends ApiStructure>(
+export function mswpida<T extends ApiStructure>(
   api: AspidaApi<T>,
   baseURL?: string,
 ): MockApi<T> {
