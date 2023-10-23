@@ -15,7 +15,9 @@ export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
 // api
 
-type MethodFetch = (option: Required<AspidaParams>) => Promise<AspidaResponse>;
+type MethodFetch = (
+  option: Required<AspidaParams>,
+) => Promise<AspidaResponse<unknown>>;
 type $MethodFetch = (option: Required<AspidaParams>) => Promise<unknown>;
 
 export type Endpoint = Partial<Record<LowerHttpMethod, MethodFetch>> &
