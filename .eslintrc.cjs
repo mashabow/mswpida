@@ -27,8 +27,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'import/no-default-export': 'error',
 
-    // ESM 非対応。tsc でチェックできているので無効化
-    'import/extensions': 'off',
+    'import/extensions': ['error', 'never'],
 
     // typescript-eslint のルールの方が正確
     'no-use-before-define': 'off',

@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { RestHandler } from 'msw';
-import { createMock } from './index.js';
-import { AspidaApi } from './type.js';
+import { createMock } from '.';
+import { AspidaApi } from './type';
 
 describe('createMock', () => {
   const baseURL = 'https://base-url.example.com/v1';
