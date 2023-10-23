@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 import { RestHandler } from 'msw';
-import { createMock } from '.';
+import { mswpida } from '.';
 import { AspidaApi } from './type';
 
-describe('createMock', () => {
+describe('mswpida', () => {
   const baseURL = 'https://base-url.example.com/v1';
 
   test('空のAPI', () => {
     const api = (() => ({})) satisfies AspidaApi;
-    const mock = createMock(api, baseURL);
+    const mock = mswpida(api, baseURL);
     expect(mock).toEqual({});
   });
 
@@ -33,7 +33,7 @@ describe('createMock', () => {
           },
         },
       })) satisfies AspidaApi;
-      const mock = createMock(api, baseURL);
+      const mock = mswpida(api, baseURL);
 
       expect(mock.$path()).toEqual(`${baseURL}/`);
       expect(mock.foo.$path()).toEqual(`${baseURL}/foo`);
@@ -62,7 +62,7 @@ describe('createMock', () => {
           }),
         },
       })) satisfies AspidaApi;
-      const mock = createMock(api, baseURL);
+      const mock = mswpida(api, baseURL);
 
       expect(mock.items._itemId().$path()).toEqual(`${baseURL}/items/:itemId`);
       expect(mock.items._itemId().variants.$path()).toEqual(
@@ -91,7 +91,7 @@ describe('createMock', () => {
         }),
       },
     })) satisfies AspidaApi;
-    const mock = createMock(api, baseURL);
+    const mock = mswpida(api, baseURL);
     const handler = mock.items
       ._itemId()
       .variants._variantId()
