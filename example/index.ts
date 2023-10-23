@@ -1,5 +1,5 @@
-import api from './generated-api/$api.js';
-import { createMock } from '../src/index.js';
+import api from './generated-api/$api';
+import { createMock } from '../src';
 
 const mock = createMock(api, 'https://example.com');
 

@@ -6,7 +6,7 @@ import {
   AspidaApi,
   Endpoint,
   MockApi,
-} from './type.js';
+} from './type';
 
 const METHODS = [
   'get',
