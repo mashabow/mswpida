@@ -27,9 +27,7 @@ const $METHODS = [
   '$options',
 ] satisfies $LowerHttpMethod[];
 
-function createMockFromApiStructure<T extends ApiStructure>(
-  apiStructure: T,
-): MockApi<T> {
+function createMock<T extends ApiStructure>(apiStructure: T): MockApi<T> {
   return Object.entries(apiStructure).reduce((acc, [key, value]) => {
     if (value instanceof Function) {
       if (key === '$path') {
@@ -57,7 +55,7 @@ function createMockFromApiStructure<T extends ApiStructure>(
         const subApiStructure = value(`:${paramName}`) as ApiStructure;
         return {
           ...acc,
-          [key]: () => createMockFromApiStructure(subApiStructure),
+          [key]: () => createMock(subApiStructure),
         };
       }
 
@@ -65,7 +63,7 @@ function createMockFromApiStructure<T extends ApiStructure>(
     }
 
     // サブパスのモックを再帰的に作る
-    return { ...acc, [key]: createMockFromApiStructure(value) };
+    return { ...acc, [key]: createMock(value) };
   }, {} as MockApi<T>);
 }
 
@@ -79,5 +77,5 @@ export function mswpida<T extends ApiStructure>(
     fetch: () => 'dummy',
   });
 
-  return createMockFromApiStructure(apiStructure);
+  return createMock(apiStructure);
 }
