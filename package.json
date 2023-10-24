@@ -4,7 +4,13 @@
   "license": "MIT",
   "author": "",
   "type": "module",
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "generate:example-api": "openapi2aspida -i https://raw.githubusercontent.com/swagger-api/swagger-petstore/swagger-petstore-v3-1.0.17/src/main/resources/openapi.yaml -o ./example/generated-api",
