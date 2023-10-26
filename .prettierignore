@@ -1,1 +1,2 @@
-pnpm-lock.yaml
+/example/generated-api
+/pnpm-lock.yaml
