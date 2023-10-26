@@ -93,7 +93,7 @@ describe('mswpida', () => {
     })) satisfies AspidaApi;
     const mock = mswpida(api, baseURL);
     const handler = mock.items._itemId.variants._variantId.$get(
-      (req, res, ctx) => res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
+      (_req, res, ctx) => res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
     );
 
     expect(handler).toBeInstanceOf(RestHandler);
