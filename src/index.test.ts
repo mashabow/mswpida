@@ -64,11 +64,11 @@ describe('mswpida', () => {
       })) satisfies AspidaApi;
       const mock = mswpida(api, baseURL);
 
-      expect(mock.items._itemId().$path()).toEqual(`${baseURL}/items/:itemId`);
-      expect(mock.items._itemId().variants.$path()).toEqual(
+      expect(mock.items._itemId.$path()).toEqual(`${baseURL}/items/:itemId`);
+      expect(mock.items._itemId.variants.$path()).toEqual(
         `${baseURL}/items/:itemId/variants`,
       );
-      expect(mock.items._itemId().variants._variantId().$path()).toEqual(
+      expect(mock.items._itemId.variants._variantId.$path()).toEqual(
         `${baseURL}/items/:itemId/variants/:variantId`,
       );
     });
@@ -92,12 +92,9 @@ describe('mswpida', () => {
       },
     })) satisfies AspidaApi;
     const mock = mswpida(api, baseURL);
-    const handler = mock.items
-      ._itemId()
-      .variants._variantId()
-      .$get((req, res, ctx) =>
-        res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
-      );
+    const handler = mock.items._itemId.variants._variantId.$get(
+      (req, res, ctx) => res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
+    );
 
     expect(handler).toBeInstanceOf(RestHandler);
   });

@@ -55,10 +55,7 @@ function createMock<T extends ApiStructure>(apiStructure: T): MockApi<T> {
         const paramName = key.substring(1);
         // @ts-expect-error TODO: 型エラー修正
         const subApiStructure = value(`:${paramName}`) as ApiStructure;
-        return {
-          ...acc,
-          [key]: () => createMock(subApiStructure),
-        };
+        return { ...acc, [key]: createMock(subApiStructure) };
       }
 
       return acc; // ここには来ないはず
