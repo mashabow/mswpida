@@ -61,9 +61,7 @@ type MockEndpoint<T extends ApiStructure> = {
     : never;
 } & { $path: () => string };
 
-type MockPathParamFunction<T extends PathParamFunction> = () => MockApi<
-  ReturnType<T>
->;
+type MockPathParam<T extends PathParamFunction> = MockApi<ReturnType<T>>;
 
 type MockNonEndpointKey<T extends ApiStructure> = Exclude<
   keyof T,
@@ -74,7 +72,7 @@ type MockNonEndpoint<T extends ApiStructure> = {
   [K in MockNonEndpointKey<T>]: T[K] extends ApiStructure
     ? MockApi<T[K]>
     : T[K] extends PathParamFunction
-    ? MockPathParamFunction<T[K]>
+    ? MockPathParam<T[K]>
     : never;
 };
 
