@@ -98,4 +98,36 @@ describe('mswpida', () => {
 
     expect(handler).toBeInstanceOf(RestHandler);
   });
+
+  test('`req.params` にパスパラメータの型がつく', () => {
+    const api = (({ baseURL: _baseURL }) => ({
+      items: {
+        _itemId: (itemId: string) => ({
+          $get: () => Promise.resolve({ foo: 'bar' }),
+          $path: () => `${_baseURL}/items/${itemId}`,
+          variants: {
+            $get: () => Promise.resolve({ foo: 'bar' }),
+            $path: () => `${_baseURL}/items/${itemId}/variants`,
+            _variantId: (variantId: number) => ({
+              $get: () => Promise.resolve({ foo: 'bar' }),
+              $path: () => `${_baseURL}/items/${itemId}/variants/${variantId}`,
+            }),
+          },
+        }),
+      },
+    })) satisfies AspidaApi;
+    const mock = mswpida(api, baseURL);
+    const handler = mock.items._itemId.variants._variantId.$get(
+      (req, res, ctx) => {
+        const itemId = req.params.itemId satisfies string;
+        const variantId = req.params.variantId satisfies string;
+        return res(
+          ctx.status(200),
+          ctx.json({ foo: 'baz', itemId, variantId }),
+        );
+      },
+    );
+
+    expect(handler).toBeInstanceOf(RestHandler);
+  });
 });
