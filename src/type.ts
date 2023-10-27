@@ -85,7 +85,7 @@ type MockPathParam<
 
 type MockNonEndpointKey<TApiStructure extends ApiStructure> = Exclude<
   keyof TApiStructure,
-  keyof Endpoint
+  keyof Endpoint | number | symbol
 >;
 
 type MockNonEndpoint<
