@@ -35,46 +35,77 @@ type NonEndpoint = {
 
 export type ApiStructure = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
 
-export type AspidaApi<T extends ApiStructure = ApiStructure> = ({
+export type AspidaApi<TApiStructure extends ApiStructure = ApiStructure> = ({
   baseURL,
   fetch,
-}: AspidaClient<unknown>) => T;
+}: AspidaClient<unknown>) => TApiStructure;
 
 // mock
 
-type MockMethod<T extends ApiStructure> = Extract<keyof T, $LowerHttpMethod>;
+type MockMethod<TApiStructure extends ApiStructure> = Extract<
+  keyof TApiStructure,
+  $LowerHttpMethod
+>;
 
-type RequestBodyOf<T extends $MethodFetch> = Parameters<T>[0]['body'];
-type ResponseBodyOf<T extends $MethodFetch> = Awaited<ReturnType<T>>;
+type RequestBodyOf<T$MethodFetch extends $MethodFetch> =
+  Parameters<T$MethodFetch>[0]['body'];
+type ResponseBodyOf<T$MethodFetch extends $MethodFetch> = Awaited<
+  ReturnType<T$MethodFetch>
+>;
 
-type HandlerCreator<T extends $MethodFetch> = (
+type HandlerCreator<
+  T$MethodFetch extends $MethodFetch,
+  TPathParamName extends string,
+> = (
   resolver: ResponseResolver<
-    RestRequest<RequestBodyOf<T>>, // TODO: パスパラメータの型 RequestParams を定義する
+    RestRequest<
+      RequestBodyOf<T$MethodFetch>,
+      // aspida 的にはパスパラメータの値は string | number だが、
+      // msw の req.params では常に string になる
+      Record<TPathParamName, string>
+    >,
     RestContext,
-    ResponseBodyOf<T>
+    ResponseBodyOf<T$MethodFetch>
   >,
 ) => RestHandler;
 
-type MockEndpoint<T extends ApiStructure> = {
-  [K in MockMethod<T>]: T[K] extends $MethodFetch
-    ? HandlerCreator<T[K]>
+type MockEndpoint<
+  TApiStructure extends ApiStructure,
+  TPathParamName extends string,
+> = {
+  [K in MockMethod<TApiStructure>]: TApiStructure[K] extends $MethodFetch
+    ? HandlerCreator<TApiStructure[K], TPathParamName>
     : never;
 } & { $path: () => string };
 
-type MockPathParam<T extends PathParamFunction> = MockApi<ReturnType<T>>;
+type MockPathParam<
+  TPathParamFunction extends PathParamFunction,
+  TPathParamName extends string,
+> = MockApi<ReturnType<TPathParamFunction>, TPathParamName>;
 
-type MockNonEndpointKey<T extends ApiStructure> = Exclude<
-  keyof T,
-  keyof Endpoint
+type MockNonEndpointKey<TApiStructure extends ApiStructure> = Exclude<
+  keyof TApiStructure,
+  keyof Endpoint | number | symbol
 >;
 
-type MockNonEndpoint<T extends ApiStructure> = {
-  [K in MockNonEndpointKey<T>]: T[K] extends ApiStructure
-    ? MockApi<T[K]>
-    : T[K] extends PathParamFunction
-    ? MockPathParam<T[K]>
+type ExtractPathParamName<TPathParamFunctionName extends string> =
+  TPathParamFunctionName extends `_${infer TPathParamName}`
+    ? TPathParamName
+    : never;
+
+type MockNonEndpoint<
+  TApiStructure extends ApiStructure,
+  TPathParamName extends string,
+> = {
+  [K in MockNonEndpointKey<TApiStructure>]: TApiStructure[K] extends ApiStructure
+    ? MockApi<TApiStructure[K], TPathParamName>
+    : TApiStructure[K] extends PathParamFunction
+    ? MockPathParam<TApiStructure[K], TPathParamName | ExtractPathParamName<K>>
     : never;
 };
 
-export type MockApi<T extends ApiStructure> = MockNonEndpoint<T> &
-  MockEndpoint<T>;
+export type MockApi<
+  TApiStructure extends ApiStructure,
+  TPathParamName extends string,
+> = MockNonEndpoint<TApiStructure, TPathParamName> &
+  MockEndpoint<TApiStructure, TPathParamName>;
