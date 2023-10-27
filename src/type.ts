@@ -53,36 +53,54 @@ type ResponseBodyOf<T$MethodFetch extends $MethodFetch> = Awaited<
   ReturnType<T$MethodFetch>
 >;
 
-type HandlerCreator<T$MethodFetch extends $MethodFetch> = (
+type HandlerCreator<
+  T$MethodFetch extends $MethodFetch,
+  TPathParamName extends string,
+> = (
   resolver: ResponseResolver<
-    RestRequest<RequestBodyOf<T$MethodFetch>>, // TODO: パスパラメータの型 RequestParams を定義する
+    RestRequest<
+      RequestBodyOf<T$MethodFetch>,
+      // aspida 的にはパスパラメータの値は string | number だが、
+      // msw の req.params では常に string になる
+      Record<TPathParamName, string>
+    >,
     RestContext,
     ResponseBodyOf<T$MethodFetch>
   >,
 ) => RestHandler;
 
-type MockEndpoint<TApiStructure extends ApiStructure> = {
+type MockEndpoint<
+  TApiStructure extends ApiStructure,
+  TPathParamName extends string,
+> = {
   [K in MockMethod<TApiStructure>]: TApiStructure[K] extends $MethodFetch
-    ? HandlerCreator<TApiStructure[K]>
+    ? HandlerCreator<TApiStructure[K], TPathParamName>
     : never;
 } & { $path: () => string };
 
-type MockPathParam<TPathParamFunction extends PathParamFunction> = MockApi<
-  ReturnType<TPathParamFunction>
->;
+type MockPathParam<
+  TPathParamFunction extends PathParamFunction,
+  TPathParamName extends string,
+> = MockApi<ReturnType<TPathParamFunction>, TPathParamName>;
 
 type MockNonEndpointKey<TApiStructure extends ApiStructure> = Exclude<
   keyof TApiStructure,
   keyof Endpoint
 >;
 
-type MockNonEndpoint<TApiStructure extends ApiStructure> = {
+type MockNonEndpoint<
+  TApiStructure extends ApiStructure,
+  TPathParamName extends string,
+> = {
   [K in MockNonEndpointKey<TApiStructure>]: TApiStructure[K] extends ApiStructure
-    ? MockApi<TApiStructure[K]>
+    ? MockApi<TApiStructure[K], TPathParamName>
     : TApiStructure[K] extends PathParamFunction
-    ? MockPathParam<TApiStructure[K]>
+    ? MockPathParam<TApiStructure[K], TPathParamName | K> // TODO: _foo から foo に変換
     : never;
 };
 
-export type MockApi<TApiStructure extends ApiStructure> =
-  MockNonEndpoint<TApiStructure> & MockEndpoint<TApiStructure>;
+export type MockApi<
+  TApiStructure extends ApiStructure,
+  TPathParamName extends string,
+> = MockNonEndpoint<TApiStructure, TPathParamName> &
+  MockEndpoint<TApiStructure, TPathParamName>;
