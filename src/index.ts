@@ -27,7 +27,9 @@ const $METHODS = [
   '$options',
 ] satisfies $LowerHttpMethod[];
 
-function createMock<T extends ApiStructure>(apiStructure: T): MockApi<T> {
+function createMock<TApiStructure extends ApiStructure>(
+  apiStructure: TApiStructure,
+): MockApi<TApiStructure> {
   // @ts-expect-error TODO: 型エラー修正
   return Object.entries(apiStructure).reduce((acc, [key, value]) => {
     if (value instanceof Function) {
@@ -63,13 +65,13 @@ function createMock<T extends ApiStructure>(apiStructure: T): MockApi<T> {
 
     // サブパスのモックを再帰的に作る
     return { ...acc, [key]: createMock(value) };
-  }, {} as MockApi<T>);
+  }, {} as MockApi<TApiStructure>);
 }
 
-export function mswpida<T extends ApiStructure>(
-  api: AspidaApi<T>,
+export function mswpida<TApiStructure extends ApiStructure>(
+  api: AspidaApi<TApiStructure>,
   baseURL?: string,
-): MockApi<T> {
+): MockApi<TApiStructure> {
   const apiStructure = api({
     baseURL,
     // @ts-expect-error 使わないので適当な関数を渡しておく
