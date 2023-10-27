@@ -88,6 +88,11 @@ type MockNonEndpointKey<TApiStructure extends ApiStructure> = Exclude<
   keyof Endpoint | number | symbol
 >;
 
+type ExtractPathParamName<TPathParamFunctionName extends string> =
+  TPathParamFunctionName extends `_${infer TPathParamName}`
+    ? TPathParamName
+    : never;
+
 type MockNonEndpoint<
   TApiStructure extends ApiStructure,
   TPathParamName extends string,
@@ -95,7 +100,7 @@ type MockNonEndpoint<
   [K in MockNonEndpointKey<TApiStructure>]: TApiStructure[K] extends ApiStructure
     ? MockApi<TApiStructure[K], TPathParamName>
     : TApiStructure[K] extends PathParamFunction
-    ? MockPathParam<TApiStructure[K], TPathParamName | K> // TODO: _foo から foo に変換
+    ? MockPathParam<TApiStructure[K], TPathParamName | ExtractPathParamName<K>>
     : never;
 };
 
