@@ -84,11 +84,6 @@ type EndpointTypedRest<
     : never;
 } & { $path: () => string };
 
-type PathParamTypedRest<
-  TPathParamFunction extends PathParamFunction,
-  TPathParamName extends string,
-> = TypedRest<ReturnType<TPathParamFunction>, TPathParamName>;
-
 type NonEndpointTypedRestKey<TApiInstance extends ApiInstance> = Exclude<
   keyof TApiInstance,
   keyof Endpoint | number | symbol
@@ -106,8 +101,8 @@ type NonEndpointTypedRest<
   [K in NonEndpointTypedRestKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
     ? TypedRest<TApiInstance[K], TPathParamName>
     : TApiInstance[K] extends PathParamFunction
-    ? PathParamTypedRest<
-        TApiInstance[K],
+    ? TypedRest<
+        ReturnType<TApiInstance[K]>,
         TPathParamName | ExtractPathParamName<K>
       >
     : never;
