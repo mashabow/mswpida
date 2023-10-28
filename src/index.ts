@@ -2,10 +2,10 @@ import { ResponseResolver, rest } from 'msw';
 import { LowerHttpMethod } from 'aspida';
 import {
   $LowerHttpMethod,
-  ApiStructure,
-  AspidaApi,
+  ApiInstance,
+  Api,
   Endpoint,
-  MockApi,
+  TypedRest,
 } from './type';
 
 const METHODS = [
@@ -27,12 +27,12 @@ const $METHODS = [
   '$options',
 ] satisfies $LowerHttpMethod[];
 
-function createMock<
-  TApiStructure extends ApiStructure,
+function createTypedRestFromApiInstance<
+  TApiInstance extends ApiInstance,
   TPathParamName extends string,
->(apiStructure: TApiStructure): MockApi<TApiStructure, TPathParamName> {
+>(apiInstance: TApiInstance): TypedRest<TApiInstance, TPathParamName> {
   // @ts-expect-error TODO: 型エラー修正
-  return Object.entries(apiStructure).reduce(
+  return Object.entries(apiInstance).reduce(
     // @ts-expect-error TODO: 型エラー修正
     (acc, [key, value]) => {
       if (value instanceof Function) {
@@ -43,7 +43,7 @@ function createMock<
         if ($METHODS.includes(key as $LowerHttpMethod)) {
           // そのメソッドのモック生成関数を返す
           const method = key.substring(1) as LowerHttpMethod;
-          const path = (apiStructure as Endpoint).$path();
+          const path = (apiInstance as Endpoint).$path();
           return {
             ...acc,
             [key]: (resolver: ResponseResolver) => rest[method](path, resolver),
@@ -59,29 +59,32 @@ function createMock<
           // 次の階層がパスパラメータ（e.g. `_foo`）の場合、パスを MSW の形式（`:foo`）に変換した上で、再帰的にモックを作る
           const paramName = key.substring(1);
           // @ts-expect-error TODO: 型エラー修正
-          const subApiStructure = value(`:${paramName}`) as ApiStructure;
-          return { ...acc, [key]: createMock(subApiStructure) };
+          const childApiInstance = value(`:${paramName}`) as ApiInstance;
+          return {
+            ...acc,
+            [key]: createTypedRestFromApiInstance(childApiInstance),
+          };
         }
 
         return acc; // ここには来ないはず
       }
 
       // サブパスのモックを再帰的に作る
-      return { ...acc, [key]: createMock(value) };
+      return { ...acc, [key]: createTypedRestFromApiInstance(value) };
     },
-    {} as MockApi<TApiStructure, TPathParamName>,
+    {} as TypedRest<TApiInstance, TPathParamName>,
   );
 }
 
-export function mswpida<TApiStructure extends ApiStructure>(
-  api: AspidaApi<TApiStructure>,
-  baseURL?: string,
-): MockApi<TApiStructure, never> {
-  const apiStructure = api({
-    baseURL,
+export function createTypedRest<TApiInstance extends ApiInstance>(
+  api: Api<TApiInstance>,
+  options?: { baseURL?: string },
+): TypedRest<TApiInstance, never> {
+  const apiInstance = api({
+    baseURL: options?.baseURL,
     // @ts-expect-error 使わないので適当な関数を渡しておく
     fetch: () => 'dummy',
   });
 
-  return createMock(apiStructure);
+  return createTypedRestFromApiInstance(apiInstance);
 }

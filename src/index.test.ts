@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest';
 import { RestHandler } from 'msw';
-import { mswpida } from '.';
-import { AspidaApi } from './type';
+import { createTypedRest } from '.';
+import { Api } from './type';
 
 describe('mswpida', () => {
   const baseURL = 'https://base-url.example.com/v1';
 
   test('空のAPI', () => {
-    const api = (() => ({})) satisfies AspidaApi;
-    const mock = mswpida(api, baseURL);
-    expect(mock).toEqual({});
+    const api = (() => ({})) satisfies Api;
+    const typedRest = createTypedRest(api, { baseURL });
+    expect(typedRest).toEqual({});
   });
 
   describe('エンドポイントのパスを $path() で取得できる', () => {
@@ -32,16 +32,16 @@ describe('mswpida', () => {
             $path: () => `${_baseURL}/hoge/piyo`,
           },
         },
-      })) satisfies AspidaApi;
-      const mock = mswpida(api, baseURL);
+      })) satisfies Api;
+      const typedRest = createTypedRest(api, { baseURL });
 
-      expect(mock.$path()).toEqual(`${baseURL}/`);
-      expect(mock.foo.$path()).toEqual(`${baseURL}/foo`);
-      expect(mock.foo.bar.$path()).toEqual(`${baseURL}/foo/bar`);
-      expect(mock.hoge.piyo.$path()).toEqual(`${baseURL}/hoge/piyo`);
+      expect(typedRest.$path()).toEqual(`${baseURL}/`);
+      expect(typedRest.foo.$path()).toEqual(`${baseURL}/foo`);
+      expect(typedRest.foo.bar.$path()).toEqual(`${baseURL}/foo/bar`);
+      expect(typedRest.hoge.piyo.$path()).toEqual(`${baseURL}/hoge/piyo`);
 
       // hoge にはエンドポイントがないので、$path は存在しない
-      expect(mock.hoge).not.toHaveProperty('$path');
+      expect(typedRest.hoge).not.toHaveProperty('$path');
     });
 
     test('パスパラメータを含む場合', () => {
@@ -61,14 +61,16 @@ describe('mswpida', () => {
             },
           }),
         },
-      })) satisfies AspidaApi;
-      const mock = mswpida(api, baseURL);
+      })) satisfies Api;
+      const typedRest = createTypedRest(api, { baseURL });
 
-      expect(mock.items._itemId.$path()).toEqual(`${baseURL}/items/:itemId`);
-      expect(mock.items._itemId.variants.$path()).toEqual(
+      expect(typedRest.items._itemId.$path()).toEqual(
+        `${baseURL}/items/:itemId`,
+      );
+      expect(typedRest.items._itemId.variants.$path()).toEqual(
         `${baseURL}/items/:itemId/variants`,
       );
-      expect(mock.items._itemId.variants._variantId.$path()).toEqual(
+      expect(typedRest.items._itemId.variants._variantId.$path()).toEqual(
         `${baseURL}/items/:itemId/variants/:variantId`,
       );
     });
@@ -90,9 +92,9 @@ describe('mswpida', () => {
           },
         }),
       },
-    })) satisfies AspidaApi;
-    const mock = mswpida(api, baseURL);
-    const handler = mock.items._itemId.variants._variantId.$get(
+    })) satisfies Api;
+    const typedRest = createTypedRest(api, { baseURL });
+    const handler = typedRest.items._itemId.variants._variantId.$get(
       (_req, res, ctx) => res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
     );
 
@@ -115,9 +117,9 @@ describe('mswpida', () => {
           },
         }),
       },
-    })) satisfies AspidaApi;
-    const mock = mswpida(api, baseURL);
-    const handler = mock.items._itemId.variants._variantId.$get(
+    })) satisfies Api;
+    const typedRest = createTypedRest(api, { baseURL });
+    const handler = typedRest.items._itemId.variants._variantId.$get(
       (req, res, ctx) => {
         const itemId = req.params.itemId satisfies string;
         const variantId = req.params.variantId satisfies string;

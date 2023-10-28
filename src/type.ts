@@ -13,7 +13,9 @@ import type {
 
 export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
-// api
+//
+// aspida が生成する API クライアントの型
+//
 
 type MethodFetch = (
   option: Required<AspidaParams>,
@@ -26,24 +28,28 @@ export type Endpoint = Partial<Record<LowerHttpMethod, MethodFetch>> &
   };
 
 type PathParamFunction =
-  | ((param: string) => ApiStructure)
-  | ((param: number) => ApiStructure);
+  | ((param: string) => ApiInstance)
+  | ((param: number) => ApiInstance);
 
 type NonEndpoint = {
-  [K in string]: ApiStructure | PathParamFunction;
+  [K in string]: ApiInstance | PathParamFunction;
 };
 
-export type ApiStructure = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
+/** aspida で生成した `api()` 関数の戻り値の型 */
+export type ApiInstance = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
 
-export type AspidaApi<TApiStructure extends ApiStructure = ApiStructure> = ({
+/** aspida で生成した `api()` 関数の型 */
+export type Api<TApiInstance extends ApiInstance = ApiInstance> = ({
   baseURL,
   fetch,
-}: AspidaClient<unknown>) => TApiStructure;
+}: AspidaClient<unknown>) => TApiInstance;
 
-// mock
+//
+// mswpida が生成する typedRest の型
+//
 
-type MockMethod<TApiStructure extends ApiStructure> = Extract<
-  keyof TApiStructure,
+type TypedRestMethod<TApiInstance extends ApiInstance> = Extract<
+  keyof TApiInstance,
   $LowerHttpMethod
 >;
 
@@ -69,22 +75,17 @@ type HandlerCreator<
   >,
 ) => RestHandler;
 
-type MockEndpoint<
-  TApiStructure extends ApiStructure,
+type EndpointTypedRest<
+  TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in MockMethod<TApiStructure>]: TApiStructure[K] extends $MethodFetch
-    ? HandlerCreator<TApiStructure[K], TPathParamName>
+  [K in TypedRestMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
+    ? HandlerCreator<TApiInstance[K], TPathParamName>
     : never;
 } & { $path: () => string };
 
-type MockPathParam<
-  TPathParamFunction extends PathParamFunction,
-  TPathParamName extends string,
-> = MockApi<ReturnType<TPathParamFunction>, TPathParamName>;
-
-type MockNonEndpointKey<TApiStructure extends ApiStructure> = Exclude<
-  keyof TApiStructure,
+type NonEndpointTypedRestKey<TApiInstance extends ApiInstance> = Exclude<
+  keyof TApiInstance,
   keyof Endpoint | number | symbol
 >;
 
@@ -93,19 +94,22 @@ type ExtractPathParamName<TPathParamFunctionName extends string> =
     ? TPathParamName
     : never;
 
-type MockNonEndpoint<
-  TApiStructure extends ApiStructure,
+type NonEndpointTypedRest<
+  TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in MockNonEndpointKey<TApiStructure>]: TApiStructure[K] extends ApiStructure
-    ? MockApi<TApiStructure[K], TPathParamName>
-    : TApiStructure[K] extends PathParamFunction
-    ? MockPathParam<TApiStructure[K], TPathParamName | ExtractPathParamName<K>>
+  [K in NonEndpointTypedRestKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
+    ? TypedRest<TApiInstance[K], TPathParamName>
+    : TApiInstance[K] extends PathParamFunction
+    ? TypedRest<
+        ReturnType<TApiInstance[K]>,
+        TPathParamName | ExtractPathParamName<K>
+      >
     : never;
 };
 
-export type MockApi<
-  TApiStructure extends ApiStructure,
+export type TypedRest<
+  TApiInstance extends ApiInstance,
   TPathParamName extends string,
-> = MockNonEndpoint<TApiStructure, TPathParamName> &
-  MockEndpoint<TApiStructure, TPathParamName>;
+> = NonEndpointTypedRest<TApiInstance, TPathParamName> &
+  EndpointTypedRest<TApiInstance, TPathParamName>;
