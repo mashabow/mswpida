@@ -33,9 +33,11 @@ type NonEndpoint = {
   [K in string]: ApiInstance | PathParamFunction;
 };
 
+/** aspida で生成した `api()` 関数の戻り値の型 */
 export type ApiInstance = Endpoint | NonEndpoint | (Endpoint & NonEndpoint);
 
-export type AspidaApi<TApiInstance extends ApiInstance = ApiInstance> = ({
+/** aspida で生成した `api()` 関数の型 */
+export type Api<TApiInstance extends ApiInstance = ApiInstance> = ({
   baseURL,
   fetch,
 }: AspidaClient<unknown>) => TApiInstance;

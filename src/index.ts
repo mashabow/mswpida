@@ -1,12 +1,6 @@
 import { ResponseResolver, rest } from 'msw';
 import { LowerHttpMethod } from 'aspida';
-import {
-  $LowerHttpMethod,
-  ApiInstance,
-  AspidaApi,
-  Endpoint,
-  MockApi,
-} from './type';
+import { $LowerHttpMethod, ApiInstance, Api, Endpoint, MockApi } from './type';
 
 const METHODS = [
   'get',
@@ -74,7 +68,7 @@ function createMock<
 }
 
 export function createTypedRest<TApiInstance extends ApiInstance>(
-  api: AspidaApi<TApiInstance>,
+  api: Api<TApiInstance>,
   baseURL?: string,
 ): MockApi<TApiInstance, never> {
   const apiInstance = api({

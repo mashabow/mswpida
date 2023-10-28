@@ -1,13 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { RestHandler } from 'msw';
 import { createTypedRest } from '.';
-import { AspidaApi } from './type';
+import { Api } from './type';
 
 describe('mswpida', () => {
   const baseURL = 'https://base-url.example.com/v1';
 
   test('空のAPI', () => {
-    const api = (() => ({})) satisfies AspidaApi;
+    const api = (() => ({})) satisfies Api;
     const typedRest = createTypedRest(api, baseURL);
     expect(typedRest).toEqual({});
   });
@@ -32,7 +32,7 @@ describe('mswpida', () => {
             $path: () => `${_baseURL}/hoge/piyo`,
           },
         },
-      })) satisfies AspidaApi;
+      })) satisfies Api;
       const typedRest = createTypedRest(api, baseURL);
 
       expect(typedRest.$path()).toEqual(`${baseURL}/`);
@@ -61,7 +61,7 @@ describe('mswpida', () => {
             },
           }),
         },
-      })) satisfies AspidaApi;
+      })) satisfies Api;
       const typedRest = createTypedRest(api, baseURL);
 
       expect(typedRest.items._itemId.$path()).toEqual(
@@ -92,7 +92,7 @@ describe('mswpida', () => {
           },
         }),
       },
-    })) satisfies AspidaApi;
+    })) satisfies Api;
     const typedRest = createTypedRest(api, baseURL);
     const handler = typedRest.items._itemId.variants._variantId.$get(
       (_req, res, ctx) => res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
@@ -117,7 +117,7 @@ describe('mswpida', () => {
           },
         }),
       },
-    })) satisfies AspidaApi;
+    })) satisfies Api;
     const typedRest = createTypedRest(api, baseURL);
     const handler = typedRest.items._itemId.variants._variantId.$get(
       (req, res, ctx) => {
