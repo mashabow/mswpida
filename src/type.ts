@@ -13,7 +13,9 @@ import type {
 
 export type $LowerHttpMethod = `$${LowerHttpMethod}`;
 
-// api
+//
+// aspida が生成する API クライアントの型
+//
 
 type MethodFetch = (
   option: Required<AspidaParams>,
@@ -42,9 +44,11 @@ export type Api<TApiInstance extends ApiInstance = ApiInstance> = ({
   fetch,
 }: AspidaClient<unknown>) => TApiInstance;
 
-// mock
+//
+// mswpida が生成する typedRest の型
+//
 
-type MockMethod<TApiInstance extends ApiInstance> = Extract<
+type TypedRestMethod<TApiInstance extends ApiInstance> = Extract<
   keyof TApiInstance,
   $LowerHttpMethod
 >;
@@ -71,21 +75,21 @@ type HandlerCreator<
   >,
 ) => RestHandler;
 
-type MockEndpoint<
+type EndpointTypedRest<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in MockMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
+  [K in TypedRestMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
     ? HandlerCreator<TApiInstance[K], TPathParamName>
     : never;
 } & { $path: () => string };
 
-type MockPathParam<
+type PathParamTypedRest<
   TPathParamFunction extends PathParamFunction,
   TPathParamName extends string,
-> = MockApi<ReturnType<TPathParamFunction>, TPathParamName>;
+> = TypedRest<ReturnType<TPathParamFunction>, TPathParamName>;
 
-type MockNonEndpointKey<TApiInstance extends ApiInstance> = Exclude<
+type NonEndpointTypedRestKey<TApiInstance extends ApiInstance> = Exclude<
   keyof TApiInstance,
   keyof Endpoint | number | symbol
 >;
@@ -95,19 +99,22 @@ type ExtractPathParamName<TPathParamFunctionName extends string> =
     ? TPathParamName
     : never;
 
-type MockNonEndpoint<
+type NonEndpointTypedRest<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in MockNonEndpointKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
-    ? MockApi<TApiInstance[K], TPathParamName>
+  [K in NonEndpointTypedRestKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
+    ? TypedRest<TApiInstance[K], TPathParamName>
     : TApiInstance[K] extends PathParamFunction
-    ? MockPathParam<TApiInstance[K], TPathParamName | ExtractPathParamName<K>>
+    ? PathParamTypedRest<
+        TApiInstance[K],
+        TPathParamName | ExtractPathParamName<K>
+      >
     : never;
 };
 
-export type MockApi<
+export type TypedRest<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
-> = MockNonEndpoint<TApiInstance, TPathParamName> &
-  MockEndpoint<TApiInstance, TPathParamName>;
+> = NonEndpointTypedRest<TApiInstance, TPathParamName> &
+  EndpointTypedRest<TApiInstance, TPathParamName>;

@@ -1,6 +1,12 @@
 import { ResponseResolver, rest } from 'msw';
 import { LowerHttpMethod } from 'aspida';
-import { $LowerHttpMethod, ApiInstance, Api, Endpoint, MockApi } from './type';
+import {
+  $LowerHttpMethod,
+  ApiInstance,
+  Api,
+  Endpoint,
+  TypedRest,
+} from './type';
 
 const METHODS = [
   'get',
@@ -24,7 +30,7 @@ const $METHODS = [
 function createTypedRestFromApiInstance<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
->(apiInstance: TApiInstance): MockApi<TApiInstance, TPathParamName> {
+>(apiInstance: TApiInstance): TypedRest<TApiInstance, TPathParamName> {
   // @ts-expect-error TODO: 型エラー修正
   return Object.entries(apiInstance).reduce(
     // @ts-expect-error TODO: 型エラー修正
@@ -66,14 +72,14 @@ function createTypedRestFromApiInstance<
       // サブパスのモックを再帰的に作る
       return { ...acc, [key]: createTypedRestFromApiInstance(value) };
     },
-    {} as MockApi<TApiInstance, TPathParamName>,
+    {} as TypedRest<TApiInstance, TPathParamName>,
   );
 }
 
 export function createTypedRest<TApiInstance extends ApiInstance>(
   api: Api<TApiInstance>,
   baseURL?: string,
-): MockApi<TApiInstance, never> {
+): TypedRest<TApiInstance, never> {
   const apiInstance = api({
     baseURL,
     // @ts-expect-error 使わないので適当な関数を渡しておく
