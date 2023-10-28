@@ -8,7 +8,7 @@ describe('mswpida', () => {
 
   test('空のAPI', () => {
     const api = (() => ({})) satisfies Api;
-    const typedRest = createTypedRest(api, baseURL);
+    const typedRest = createTypedRest(api, { baseURL });
     expect(typedRest).toEqual({});
   });
 
@@ -33,7 +33,7 @@ describe('mswpida', () => {
           },
         },
       })) satisfies Api;
-      const typedRest = createTypedRest(api, baseURL);
+      const typedRest = createTypedRest(api, { baseURL });
 
       expect(typedRest.$path()).toEqual(`${baseURL}/`);
       expect(typedRest.foo.$path()).toEqual(`${baseURL}/foo`);
@@ -62,7 +62,7 @@ describe('mswpida', () => {
           }),
         },
       })) satisfies Api;
-      const typedRest = createTypedRest(api, baseURL);
+      const typedRest = createTypedRest(api, { baseURL });
 
       expect(typedRest.items._itemId.$path()).toEqual(
         `${baseURL}/items/:itemId`,
@@ -93,7 +93,7 @@ describe('mswpida', () => {
         }),
       },
     })) satisfies Api;
-    const typedRest = createTypedRest(api, baseURL);
+    const typedRest = createTypedRest(api, { baseURL });
     const handler = typedRest.items._itemId.variants._variantId.$get(
       (_req, res, ctx) => res.once(ctx.status(200), ctx.json({ foo: 'baz' })),
     );
@@ -118,7 +118,7 @@ describe('mswpida', () => {
         }),
       },
     })) satisfies Api;
-    const typedRest = createTypedRest(api, baseURL);
+    const typedRest = createTypedRest(api, { baseURL });
     const handler = typedRest.items._itemId.variants._variantId.$get(
       (req, res, ctx) => {
         const itemId = req.params.itemId satisfies string;

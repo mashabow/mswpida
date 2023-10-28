@@ -78,10 +78,10 @@ function createTypedRestFromApiInstance<
 
 export function createTypedRest<TApiInstance extends ApiInstance>(
   api: Api<TApiInstance>,
-  baseURL?: string,
+  options?: { baseURL?: string },
 ): TypedRest<TApiInstance, never> {
   const apiInstance = api({
-    baseURL,
+    baseURL: options?.baseURL,
     // @ts-expect-error 使わないので適当な関数を渡しておく
     fetch: () => 'dummy',
   });
