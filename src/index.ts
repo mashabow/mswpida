@@ -21,7 +21,7 @@ const $METHODS = [
   '$options',
 ] satisfies $LowerHttpMethod[];
 
-function createMock<
+function createTypedRestFromApiInstance<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 >(apiInstance: TApiInstance): MockApi<TApiInstance, TPathParamName> {
@@ -54,14 +54,17 @@ function createMock<
           const paramName = key.substring(1);
           // @ts-expect-error TODO: 型エラー修正
           const childApiInstance = value(`:${paramName}`) as ApiInstance;
-          return { ...acc, [key]: createMock(childApiInstance) };
+          return {
+            ...acc,
+            [key]: createTypedRestFromApiInstance(childApiInstance),
+          };
         }
 
         return acc; // ここには来ないはず
       }
 
       // サブパスのモックを再帰的に作る
-      return { ...acc, [key]: createMock(value) };
+      return { ...acc, [key]: createTypedRestFromApiInstance(value) };
     },
     {} as MockApi<TApiInstance, TPathParamName>,
   );
@@ -77,5 +80,5 @@ export function createTypedRest<TApiInstance extends ApiInstance>(
     fetch: () => 'dummy',
   });
 
-  return createMock(apiInstance);
+  return createTypedRestFromApiInstance(apiInstance);
 }
