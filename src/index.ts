@@ -73,7 +73,7 @@ function createMock<
   );
 }
 
-export function mswpida<TApiStructure extends ApiStructure>(
+export function createTypedRest<TApiStructure extends ApiStructure>(
   api: AspidaApi<TApiStructure>,
   baseURL?: string,
 ): MockApi<TApiStructure, never> {
