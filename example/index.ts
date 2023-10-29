@@ -11,7 +11,7 @@ const handlers = [
     console.log(newPet.name);
     return res(ctx.status(201), ctx.json({ ...newPet, id: 123 }));
   }),
-  typedRest.pets._id.$get(async (req, res, ctx) => {
+  typedRest.pets._id.$delete(async (req, res, ctx) => {
     console.log(req.params.id);
     return res(ctx.status(204));
   }),
