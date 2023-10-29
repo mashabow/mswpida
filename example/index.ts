@@ -1,12 +1,21 @@
+/* eslint-disable no-console */
+import { setupWorker } from 'msw';
 import api from './generated-api/$api';
 import { createTypedRest } from '../src';
 
 const typedRest = createTypedRest(api, { baseURL: 'https://example.com' });
 
-typedRest.pet._petId.$post(async (req, res, ctx) =>
-  res(ctx.status(201), ctx.json(await req.json())),
-);
+const handlers = [
+  typedRest.pets.$post((req, res, ctx) => {
+    const newPet = req.body;
+    console.log(newPet.name);
+    return res(ctx.status(201), ctx.json({ ...newPet, id: 123 }));
+  }),
+  typedRest.pets._id.$get(async (req, res, ctx) => {
+    console.log(req.params.id);
+    return res(ctx.status(204));
+  }),
+];
 
-typedRest.user.createWithList.$post(async (req, res, ctx) =>
-  res(ctx.status(201), ctx.json(await req.json())),
-);
+const worker = setupWorker(...handlers);
+await worker.start();
