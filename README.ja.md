@@ -25,10 +25,10 @@ const typedRest = createTypedRest(api);
 const handlers = [
   typedRest.products._productId.images.$post((req, res, ctx) => {
     console.log(`Add an image to product ${req.params.productId}`); // パスパラメータに型がついている ✅
-    const newImage = req.body; // リクエストボディに型がついている ✅
+    console.log(`Image description: ${req.body.description}`); // リクエストボディに型がついている ✅
     return res(
       ctx.status(201),
-      ctx.json({ id: 123, ...newImage }), // レスポンスボディにも型がついている ✅
+      ctx.json({ id: 123, ...req.body }), // レスポンスボディにも型がついている ✅
     );
   }),
   // ...
@@ -87,10 +87,10 @@ const path = typedRest.products._productId.images.$path();
 ```ts
 const handler = typedRest.products._productId.images.$post((req, res, ctx) => {
   console.log(`Add an image to product ${req.params.productId}`); // パスパラメータに型がついている ✅
-  const newImage = req.body; // リクエストボディに型がついている ✅
+  console.log(`Image description: ${req.body.description}`); // リクエストボディに型がついている ✅
   return res(
     ctx.status(201),
-    ctx.json({ id: 123, ...newImage }), // レスポンスボディにも型がついている ✅
+    ctx.json({ id: 123, ...req.body }), // レスポンスボディにも型がついている ✅
   );
 });
 ```
