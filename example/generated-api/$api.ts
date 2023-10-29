@@ -1,283 +1,80 @@
 import type { AspidaClient, BasicHeaders } from 'aspida';
 import { dataToURLString } from 'aspida';
-import type { Methods as Methods_oom0a7 } from './pet';
-import type { Methods as Methods_28jsbg } from './pet/_petId@number';
-import type { Methods as Methods_1k0b4d } from './pet/_petId@number/uploadImage';
-import type { Methods as Methods_y27ayw } from './pet/findByStatus';
-import type { Methods as Methods_hw6vnj } from './pet/findByTags';
-import type { Methods as Methods_gp223s } from './store/inventory';
-import type { Methods as Methods_fgwm1g } from './store/order';
-import type { Methods as Methods_1q4hsko } from './store/order/_orderId@number';
-import type { Methods as Methods_tli9od } from './user';
-import type { Methods as Methods_1e9ibho } from './user/_username@string';
-import type { Methods as Methods_1ug4t2i } from './user/createWithList';
-import type { Methods as Methods_1904ovn } from './user/login';
+import type { Methods as Methods_1agtfh0 } from './pets';
+import type { Methods as Methods_15l7d74 } from './pets/_id@number';
 
 const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
-  const prefix = (baseURL === undefined ? 'https://raw.githubusercontent.com/v3' : baseURL).replace(/\/$/, '');
-  const PATH0 = '/pet';
-  const PATH1 = '/uploadImage';
-  const PATH2 = '/pet/findByStatus';
-  const PATH3 = '/pet/findByTags';
-  const PATH4 = '/store/inventory';
-  const PATH5 = '/store/order';
-  const PATH6 = '/user';
-  const PATH7 = '/user/createWithList';
-  const PATH8 = '/user/login';
+  const prefix = (baseURL === undefined ? 'http://petstore.swagger.io/api' : baseURL).replace(/\/$/, '');
+  const PATH0 = '/pets';
   const GET = 'GET';
   const POST = 'POST';
-  const PUT = 'PUT';
   const DELETE = 'DELETE';
 
   return {
-    pet: {
-      _petId: (val1: number) => {
+    pets: {
+      _id: (val1: number) => {
         const prefix1 = `${PATH0}/${val1}`;
 
         return {
-          uploadImage: {
-            /**
-             * @returns successful operation
-             */
-            post: (option: { body: Methods_1k0b4d['post']['reqBody'], query?: Methods_1k0b4d['post']['query'] | undefined, config?: T | undefined }) =>
-              fetch<Methods_1k0b4d['post']['resBody'], BasicHeaders, Methods_1k0b4d['post']['status']>(prefix, `${prefix1}${PATH1}`, POST, option).json(),
-            /**
-             * @returns successful operation
-             */
-            $post: (option: { body: Methods_1k0b4d['post']['reqBody'], query?: Methods_1k0b4d['post']['query'] | undefined, config?: T | undefined }) =>
-              fetch<Methods_1k0b4d['post']['resBody'], BasicHeaders, Methods_1k0b4d['post']['status']>(prefix, `${prefix1}${PATH1}`, POST, option).json().then(r => r.body),
-            $path: (option?: { method: 'post'; query: Methods_1k0b4d['post']['query'] } | undefined) =>
-              `${prefix}${prefix1}${PATH1}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
-          },
           /**
-           * Returns a single pet
-           * @returns successful operation
+           * Returns a user based on a single ID, if the user does not have access to the pet
+           * @returns pet response
            */
           get: (option?: { config?: T | undefined } | undefined) =>
-            fetch<Methods_28jsbg['get']['resBody'], BasicHeaders, Methods_28jsbg['get']['status']>(prefix, prefix1, GET, option).json(),
+            fetch<Methods_15l7d74['get']['resBody'], BasicHeaders, Methods_15l7d74['get']['status']>(prefix, prefix1, GET, option).json(),
           /**
-           * Returns a single pet
-           * @returns successful operation
+           * Returns a user based on a single ID, if the user does not have access to the pet
+           * @returns pet response
            */
           $get: (option?: { config?: T | undefined } | undefined) =>
-            fetch<Methods_28jsbg['get']['resBody'], BasicHeaders, Methods_28jsbg['get']['status']>(prefix, prefix1, GET, option).json().then(r => r.body),
-          post: (option?: { query?: Methods_28jsbg['post']['query'] | undefined, config?: T | undefined } | undefined) =>
-            fetch(prefix, prefix1, POST, option).send(),
-          $post: (option?: { query?: Methods_28jsbg['post']['query'] | undefined, config?: T | undefined } | undefined) =>
-            fetch(prefix, prefix1, POST, option).send().then(r => r.body),
-          delete: (option?: { headers?: Methods_28jsbg['delete']['reqHeaders'] | undefined, config?: T | undefined } | undefined) =>
-            fetch(prefix, prefix1, DELETE, option).send(),
-          $delete: (option?: { headers?: Methods_28jsbg['delete']['reqHeaders'] | undefined, config?: T | undefined } | undefined) =>
-            fetch(prefix, prefix1, DELETE, option).send().then(r => r.body),
-          $path: (option?: { method: 'post'; query: Methods_28jsbg['post']['query'] } | undefined) =>
-            `${prefix}${prefix1}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
-        };
-      },
-      findByStatus: {
-        /**
-         * Multiple status values can be provided with comma separated strings
-         * @returns successful operation
-         */
-        get: (option?: { query?: Methods_y27ayw['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-          fetch<Methods_y27ayw['get']['resBody'], BasicHeaders, Methods_y27ayw['get']['status']>(prefix, PATH2, GET, option).json(),
-        /**
-         * Multiple status values can be provided with comma separated strings
-         * @returns successful operation
-         */
-        $get: (option?: { query?: Methods_y27ayw['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-          fetch<Methods_y27ayw['get']['resBody'], BasicHeaders, Methods_y27ayw['get']['status']>(prefix, PATH2, GET, option).json().then(r => r.body),
-        $path: (option?: { method?: 'get' | undefined; query: Methods_y27ayw['get']['query'] } | undefined) =>
-          `${prefix}${PATH2}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
-      },
-      findByTags: {
-        /**
-         * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
-         * @returns successful operation
-         */
-        get: (option?: { query?: Methods_hw6vnj['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-          fetch<Methods_hw6vnj['get']['resBody'], BasicHeaders, Methods_hw6vnj['get']['status']>(prefix, PATH3, GET, option).json(),
-        /**
-         * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
-         * @returns successful operation
-         */
-        $get: (option?: { query?: Methods_hw6vnj['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-          fetch<Methods_hw6vnj['get']['resBody'], BasicHeaders, Methods_hw6vnj['get']['status']>(prefix, PATH3, GET, option).json().then(r => r.body),
-        $path: (option?: { method?: 'get' | undefined; query: Methods_hw6vnj['get']['query'] } | undefined) =>
-          `${prefix}${PATH3}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
-      },
-      /**
-       * Add a new pet to the store
-       * @param option.body - Create a new pet in the store
-       * @returns Successful operation
-       */
-      post: (option: { body: Methods_oom0a7['post']['reqBody'], config?: T | undefined }) =>
-        fetch<Methods_oom0a7['post']['resBody'], BasicHeaders, Methods_oom0a7['post']['status']>(prefix, PATH0, POST, option, 'URLSearchParams').json(),
-      /**
-       * Add a new pet to the store
-       * @param option.body - Create a new pet in the store
-       * @returns Successful operation
-       */
-      $post: (option: { body: Methods_oom0a7['post']['reqBody'], config?: T | undefined }) =>
-        fetch<Methods_oom0a7['post']['resBody'], BasicHeaders, Methods_oom0a7['post']['status']>(prefix, PATH0, POST, option, 'URLSearchParams').json().then(r => r.body),
-      /**
-       * Update an existing pet by Id
-       * @param option.body - Update an existent pet in the store
-       * @returns Successful operation
-       */
-      put: (option: { body: Methods_oom0a7['put']['reqBody'], config?: T | undefined }) =>
-        fetch<Methods_oom0a7['put']['resBody'], BasicHeaders, Methods_oom0a7['put']['status']>(prefix, PATH0, PUT, option, 'URLSearchParams').json(),
-      /**
-       * Update an existing pet by Id
-       * @param option.body - Update an existent pet in the store
-       * @returns Successful operation
-       */
-      $put: (option: { body: Methods_oom0a7['put']['reqBody'], config?: T | undefined }) =>
-        fetch<Methods_oom0a7['put']['resBody'], BasicHeaders, Methods_oom0a7['put']['status']>(prefix, PATH0, PUT, option, 'URLSearchParams').json().then(r => r.body),
-      $path: () => `${prefix}${PATH0}`,
-    },
-    store: {
-      inventory: {
-        /**
-         * Returns a map of status codes to quantities
-         * @returns successful operation
-         */
-        get: (option?: { config?: T | undefined } | undefined) =>
-          fetch<Methods_gp223s['get']['resBody'], BasicHeaders, Methods_gp223s['get']['status']>(prefix, PATH4, GET, option).json(),
-        /**
-         * Returns a map of status codes to quantities
-         * @returns successful operation
-         */
-        $get: (option?: { config?: T | undefined } | undefined) =>
-          fetch<Methods_gp223s['get']['resBody'], BasicHeaders, Methods_gp223s['get']['status']>(prefix, PATH4, GET, option).json().then(r => r.body),
-        $path: () => `${prefix}${PATH4}`,
-      },
-      order: {
-        _orderId: (val2: number) => {
-          const prefix2 = `${PATH5}/${val2}`;
-
-          return {
-            /**
-             * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
-             * @returns successful operation
-             */
-            get: (option?: { config?: T | undefined } | undefined) =>
-              fetch<Methods_1q4hsko['get']['resBody'], BasicHeaders, Methods_1q4hsko['get']['status']>(prefix, prefix2, GET, option).json(),
-            /**
-             * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
-             * @returns successful operation
-             */
-            $get: (option?: { config?: T | undefined } | undefined) =>
-              fetch<Methods_1q4hsko['get']['resBody'], BasicHeaders, Methods_1q4hsko['get']['status']>(prefix, prefix2, GET, option).json().then(r => r.body),
-            /**
-             * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
-             */
-            delete: (option?: { config?: T | undefined } | undefined) =>
-              fetch(prefix, prefix2, DELETE, option).send(),
-            /**
-             * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
-             */
-            $delete: (option?: { config?: T | undefined } | undefined) =>
-              fetch(prefix, prefix2, DELETE, option).send().then(r => r.body),
-            $path: () => `${prefix}${prefix2}`,
-          };
-        },
-        /**
-         * Place a new order in the store
-         * @returns successful operation
-         */
-        post: (option: { body: Methods_fgwm1g['post']['reqBody'], config?: T | undefined }) =>
-          fetch<Methods_fgwm1g['post']['resBody'], BasicHeaders, Methods_fgwm1g['post']['status']>(prefix, PATH5, POST, option, 'URLSearchParams').json(),
-        /**
-         * Place a new order in the store
-         * @returns successful operation
-         */
-        $post: (option: { body: Methods_fgwm1g['post']['reqBody'], config?: T | undefined }) =>
-          fetch<Methods_fgwm1g['post']['resBody'], BasicHeaders, Methods_fgwm1g['post']['status']>(prefix, PATH5, POST, option, 'URLSearchParams').json().then(r => r.body),
-        $path: () => `${prefix}${PATH5}`,
-      },
-    },
-    user: {
-      _username: (val1: string) => {
-        const prefix1 = `${PATH6}/${val1}`;
-
-        return {
+            fetch<Methods_15l7d74['get']['resBody'], BasicHeaders, Methods_15l7d74['get']['status']>(prefix, prefix1, GET, option).json().then(r => r.body),
           /**
-           * @returns successful operation
-           */
-          get: (option?: { config?: T | undefined } | undefined) =>
-            fetch<Methods_1e9ibho['get']['resBody'], BasicHeaders, Methods_1e9ibho['get']['status']>(prefix, prefix1, GET, option).json(),
-          /**
-           * @returns successful operation
-           */
-          $get: (option?: { config?: T | undefined } | undefined) =>
-            fetch<Methods_1e9ibho['get']['resBody'], BasicHeaders, Methods_1e9ibho['get']['status']>(prefix, prefix1, GET, option).json().then(r => r.body),
-          /**
-           * This can only be done by the logged in user.
-           * @param option.body - Update an existent user in the store
-           */
-          put: (option: { body: Methods_1e9ibho['put']['reqBody'], config?: T | undefined }) =>
-            fetch(prefix, prefix1, PUT, option, 'URLSearchParams').send(),
-          /**
-           * This can only be done by the logged in user.
-           * @param option.body - Update an existent user in the store
-           */
-          $put: (option: { body: Methods_1e9ibho['put']['reqBody'], config?: T | undefined }) =>
-            fetch(prefix, prefix1, PUT, option, 'URLSearchParams').send().then(r => r.body),
-          /**
-           * This can only be done by the logged in user.
+           * deletes a single pet based on the ID supplied
            */
           delete: (option?: { config?: T | undefined } | undefined) =>
-            fetch(prefix, prefix1, DELETE, option).send(),
+            fetch<void, BasicHeaders, Methods_15l7d74['delete']['status']>(prefix, prefix1, DELETE, option).send(),
           /**
-           * This can only be done by the logged in user.
+           * deletes a single pet based on the ID supplied
            */
           $delete: (option?: { config?: T | undefined } | undefined) =>
-            fetch(prefix, prefix1, DELETE, option).send().then(r => r.body),
+            fetch<void, BasicHeaders, Methods_15l7d74['delete']['status']>(prefix, prefix1, DELETE, option).send().then(r => r.body),
           $path: () => `${prefix}${prefix1}`,
         };
       },
-      createWithList: {
-        /**
-         * Creates list of users with given input array
-         * @returns Successful operation
-         */
-        post: (option: { body: Methods_1ug4t2i['post']['reqBody'], config?: T | undefined }) =>
-          fetch<Methods_1ug4t2i['post']['resBody'], BasicHeaders, Methods_1ug4t2i['post']['status']>(prefix, PATH7, POST, option).json(),
-        /**
-         * Creates list of users with given input array
-         * @returns Successful operation
-         */
-        $post: (option: { body: Methods_1ug4t2i['post']['reqBody'], config?: T | undefined }) =>
-          fetch<Methods_1ug4t2i['post']['resBody'], BasicHeaders, Methods_1ug4t2i['post']['status']>(prefix, PATH7, POST, option).json().then(r => r.body),
-        $path: () => `${prefix}${PATH7}`,
-      },
-      login: {
-        /**
-         * @returns successful operation
-         */
-        get: (option?: { query?: Methods_1904ovn['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-          fetch<Methods_1904ovn['get']['resBody'], Methods_1904ovn['get']['resHeaders'], Methods_1904ovn['get']['status']>(prefix, PATH8, GET, option).text(),
-        /**
-         * @returns successful operation
-         */
-        $get: (option?: { query?: Methods_1904ovn['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-          fetch<Methods_1904ovn['get']['resBody'], Methods_1904ovn['get']['resHeaders'], Methods_1904ovn['get']['status']>(prefix, PATH8, GET, option).text().then(r => r.body),
-        $path: (option?: { method?: 'get' | undefined; query: Methods_1904ovn['get']['query'] } | undefined) =>
-          `${prefix}${PATH8}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
-      },
       /**
-       * This can only be done by the logged in user.
-       * @param option.body - Created user object
+       * Returns all pets from the system that the user has access to
+       * Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.
+       *
+       * Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
+       * @returns pet response
        */
-      post: (option: { body: Methods_tli9od['post']['reqBody'], config?: T | undefined }) =>
-        fetch(prefix, PATH6, POST, option, 'URLSearchParams').send(),
+      get: (option?: { query?: Methods_1agtfh0['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+        fetch<Methods_1agtfh0['get']['resBody'], BasicHeaders, Methods_1agtfh0['get']['status']>(prefix, PATH0, GET, option).json(),
       /**
-       * This can only be done by the logged in user.
-       * @param option.body - Created user object
+       * Returns all pets from the system that the user has access to
+       * Nam sed condimentum est. Maecenas tempor sagittis sapien, nec rhoncus sem sagittis sit amet. Aenean at gravida augue, ac iaculis sem. Curabitur odio lorem, ornare eget elementum nec, cursus id lectus. Duis mi turpis, pulvinar ac eros ac, tincidunt varius justo. In hac habitasse platea dictumst. Integer at adipiscing ante, a sagittis ligula. Aenean pharetra tempor ante molestie imperdiet. Vivamus id aliquam diam. Cras quis velit non tortor eleifend sagittis. Praesent at enim pharetra urna volutpat venenatis eget eget mauris. In eleifend fermentum facilisis. Praesent enim enim, gravida ac sodales sed, placerat id erat. Suspendisse lacus dolor, consectetur non augue vel, vehicula interdum libero. Morbi euismod sagittis libero sed lacinia.
+       *
+       * Sed tempus felis lobortis leo pulvinar rutrum. Nam mattis velit nisl, eu condimentum ligula luctus nec. Phasellus semper velit eget aliquet faucibus. In a mattis elit. Phasellus vel urna viverra, condimentum lorem id, rhoncus nibh. Ut pellentesque posuere elementum. Sed a varius odio. Morbi rhoncus ligula libero, vel eleifend nunc tristique vitae. Fusce et sem dui. Aenean nec scelerisque tortor. Fusce malesuada accumsan magna vel tempus. Quisque mollis felis eu dolor tristique, sit amet auctor felis gravida. Sed libero lorem, molestie sed nisl in, accumsan tempor nisi. Fusce sollicitudin massa ut lacinia mattis. Sed vel eleifend lorem. Pellentesque vitae felis pretium, pulvinar elit eu, euismod sapien.
+       * @returns pet response
        */
-      $post: (option: { body: Methods_tli9od['post']['reqBody'], config?: T | undefined }) =>
-        fetch(prefix, PATH6, POST, option, 'URLSearchParams').send().then(r => r.body),
-      $path: () => `${prefix}${PATH6}`,
+      $get: (option?: { query?: Methods_1agtfh0['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+        fetch<Methods_1agtfh0['get']['resBody'], BasicHeaders, Methods_1agtfh0['get']['status']>(prefix, PATH0, GET, option).json().then(r => r.body),
+      /**
+       * Creates a new pet in the store. Duplicates are allowed
+       * @param option.body - Pet to add to the store
+       * @returns pet response
+       */
+      post: (option: { body: Methods_1agtfh0['post']['reqBody'], config?: T | undefined }) =>
+        fetch<Methods_1agtfh0['post']['resBody'], BasicHeaders, Methods_1agtfh0['post']['status']>(prefix, PATH0, POST, option).json(),
+      /**
+       * Creates a new pet in the store. Duplicates are allowed
+       * @param option.body - Pet to add to the store
+       * @returns pet response
+       */
+      $post: (option: { body: Methods_1agtfh0['post']['reqBody'], config?: T | undefined }) =>
+        fetch<Methods_1agtfh0['post']['resBody'], BasicHeaders, Methods_1agtfh0['post']['status']>(prefix, PATH0, POST, option).json().then(r => r.body),
+      $path: (option?: { method?: 'get' | undefined; query: Methods_1agtfh0['get']['query'] } | undefined) =>
+        `${prefix}${PATH0}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`,
     },
   };
 };
