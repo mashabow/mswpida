@@ -6,6 +6,8 @@ MSW を型安全に使うための、aspida ユーザー向けのラッパー
 - Type safe.
 - Aspida-like interface.
 
+[English](./README.md) / [日本語](./README.ja.md)
+
 ## インストール
 
 ```console
@@ -81,7 +83,7 @@ const path = typedRest.products._productId.images.$path();
 - パスパラメータ `req.params`
   - MSW の仕様上、値の型は常に `string` になります。
 - リクエストボディ `req.body`
-  - ただし `await req.json()` の方には型はつかず、常に `any` になります（[参考](https://github.com/mswjs/msw/issues/1318#issuecomment-1205149710)）。
+  - ただし `await req.json()` の方には型はつかず、[常に `any` になります](https://github.com/mswjs/msw/issues/1318#issuecomment-1205149710)。
 - レスポンスボディ `res(ctx.json())`
 
 ```ts

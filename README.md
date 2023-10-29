@@ -6,7 +6,7 @@ A wrapper to use MSW in a type-safe manner for aspida users.
 - Type safe.
 - Aspida-like interface.
 
-ℹ️ [日本語の README はこちら](./README.ja.md)
+[English](./README.md) / [日本語](./README.ja.md)
 
 ## Installation
 
@@ -83,7 +83,7 @@ Expressed as the `$`-prefixed HTTP method function, like `.$get(resolver)` or `.
 - Path parameter `req.params`
   - As per MSW's behavior, the type of value is always `string`.
 - Request body `req.body`
-  - Note that for `await req.json()`, the type is always `any` ([reference](https://github.com/mswjs/msw/issues/1318#issuecomment-1205149710)).
+  - Note that for `await req.json()`, [the type is always `any`](https://github.com/mswjs/msw/issues/1318#issuecomment-1205149710).
 - Response body `res(ctx.json())`
 
 ```ts
