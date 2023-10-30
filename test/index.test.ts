@@ -2,14 +2,35 @@ import { describe, expect, test } from 'vitest';
 import { RestHandler } from 'msw';
 import { createTypedRest } from '../src';
 import { Api } from '../src/type';
+import petStoreApi from './generated-api/$api';
 
-describe('mswpida', () => {
+describe('createTypedRest', () => {
   const baseURL = 'https://base-url.example.com/v1';
 
-  test('空のAPI', () => {
-    const api = (() => ({})) satisfies Api;
-    const typedRest = createTypedRest(api, { baseURL });
-    expect(typedRest).toEqual({});
+  describe('API の構造に沿った `typedRest` が作成される', () => {
+    test('openapi2aspida で生成した Pet Store API から、Pet Store API 用の `typedRest` が作成される', () => {
+      const typedRest = createTypedRest(petStoreApi);
+      expect(typedRest).toMatchInlineSnapshot(`
+        {
+          "pets": {
+            "$get": [Function],
+            "$path": [Function],
+            "$post": [Function],
+            "_id": {
+              "$delete": [Function],
+              "$get": [Function],
+              "$path": [Function],
+            },
+          },
+        }
+      `);
+    });
+
+    test('空の API からは空の `typedRest` が作成される', () => {
+      const emptyApi = (() => ({})) satisfies Api;
+      const typedRest = createTypedRest(emptyApi);
+      expect(typedRest).toEqual({});
+    });
   });
 
   describe('エンドポイントのパスを $path() で取得できる', () => {
