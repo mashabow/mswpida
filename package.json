@@ -1,6 +1,6 @@
 {
   "name": "mswpida",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A wrapper to use MSW in a type-safe manner for aspida users.",
   "keywords": [
     "msw",
