@@ -1,6 +1,7 @@
 {
   "name": "mswpida",
   "version": "0.0.2",
+  "description": "A wrapper to use MSW in a type-safe manner for aspida users.",
   "license": "MIT",
   "author": "Masaya Nakamura <mashabow@shiromoji.net>",
   "readme": "https://github.com/mashabow/mswpida#readme",
