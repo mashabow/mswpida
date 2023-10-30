@@ -24,8 +24,7 @@
   "main": "dist/index.js",
   "files": [
     "dist",
-    "src",
-    "!src/**/*.test.*"
+    "src"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",

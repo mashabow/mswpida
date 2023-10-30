@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { RestHandler } from 'msw';
-import { createTypedRest } from '.';
-import { Api } from './type';
+import { createTypedRest } from '../src';
+import { Api } from '../src/type';
 
 describe('mswpida', () => {
   const baseURL = 'https://base-url.example.com/v1';
