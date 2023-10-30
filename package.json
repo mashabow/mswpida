@@ -2,18 +2,17 @@
   "name": "mswpida",
   "version": "0.0.2",
   "description": "A wrapper to use MSW in a type-safe manner for aspida users.",
-  "license": "MIT",
-  "author": "Masaya Nakamura <mashabow@shiromoji.net>",
-  "readme": "https://github.com/mashabow/mswpida#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mashabow/mswpida.git"
-  },
   "keywords": [
     "msw",
     "aspida",
     "typescript"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mashabow/mswpida.git"
+  },
+  "license": "MIT",
+  "author": "Masaya Nakamura <mashabow@shiromoji.net>",
   "type": "module",
   "exports": {
     ".": {
@@ -63,5 +62,6 @@
     "overrides": {
       "tsconfig-paths": "^4.0.0"
     }
-  }
+  },
+  "readme": "https://github.com/mashabow/mswpida#readme"
 }
