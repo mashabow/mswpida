@@ -81,6 +81,31 @@ describe('createTypedRest', () => {
         expect(resBody).toEqual({ id: 123, name: 'Foo' });
       });
 
+      test('aspida で指定された型以外のレスポンスボディを返したい場合は、型パラメータでそれを表現できる', async () => {
+        const typedRest = createTypedRest(petStoreApi);
+        type ErrorResponseBody = { errorCode: string };
+        server.use(
+          typedRest.pets._id.$get<ErrorResponseBody>((req, res, ctx) => {
+            const petId = req.params.id;
+            if (petId === 'bad_id') {
+              return res(
+                ctx.status(404),
+                ctx.json({ errorCode: 'resource_not_found' }),
+              );
+            }
+            return res(
+              ctx.status(200),
+              ctx.json({ id: Number(petId), name: 'Foo' }),
+            );
+          }),
+        );
+
+        const client = petStoreApi(aspida(fetch));
+        const resBody = await client.pets._id(123).$get();
+
+        expect(resBody).toEqual({ id: 123, name: 'Foo' });
+      });
+
       test('`createTypedRest` で `baseURL` オプションを指定した場合、それがベース URL として使われる', async () => {
         const typedRest = createTypedRest(petStoreApi, {
           baseURL: customBaseURL,

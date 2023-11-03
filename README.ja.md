@@ -97,6 +97,29 @@ const handler = typedRest.products._productId.images.$post((req, res, ctx) => {
 });
 ```
 
+## FAQ
+
+### MSW 2.x には対応していますか？
+
+まだ対応していませんが、[対応予定です](https://github.com/mashabow/mswpida/issues/13)。
+
+### エラーレスポンスなど、正常系以外のレスポンスボディを返そうとすると型エラーになります。
+
+`.$get<T>()` や `.$post<T>()` のようにして、メソッドに型パラメータをつけると、レスポンスボディとして `T` を返しても型エラーにならなくなります。
+
+```ts
+type ErrorResponseBody = { errorCode: string };
+
+const handler = typedRest.products._productId.images.$post<ErrorResponseBody>(
+  (req, res, ctx) => {
+    if (req.params.productId === 'bad_id') {
+      return res(ctx.status(404), ctx.json({ errorCode: 'product_not_found' }));
+    }
+    return res(ctx.status(201), ctx.json({ id: 123, ...req.body }));
+  },
+);
+```
+
 ## ライセンス
 
 MIT
