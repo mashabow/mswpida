@@ -5,6 +5,7 @@ import type {
   LowerHttpMethod,
 } from 'aspida';
 import type {
+  DefaultBodyType,
   ResponseResolver,
   RestContext,
   RestHandler,
@@ -62,7 +63,10 @@ type ResponseBodyOf<T$MethodFetch extends $MethodFetch> = Awaited<
 type HandlerCreator<
   T$MethodFetch extends $MethodFetch,
   TPathParamName extends string,
-> = (
+> = <
+  /** aspida で指定された型以外のレスポンスボディを返したい場合は、この型パラメータを使う */
+  TAlternativeResponseBody extends DefaultBodyType = never,
+>(
   resolver: ResponseResolver<
     RestRequest<
       RequestBodyOf<T$MethodFetch>,
@@ -71,7 +75,7 @@ type HandlerCreator<
       Record<TPathParamName, string>
     >,
     RestContext,
-    ResponseBodyOf<T$MethodFetch>
+    ResponseBodyOf<T$MethodFetch> | TAlternativeResponseBody
   >,
 ) => RestHandler;
 
