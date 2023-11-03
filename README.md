@@ -80,7 +80,7 @@ const path = typedRest.products._productId.images.$path();
 
 Expressed as the `$`-prefixed HTTP method function, like `.$get(resolver)` or `.$post(resolver)`. The argument is MSW's [response resolver](https://v1.mswjs.io/docs/basics/response-resolver). The following three are typed from aspida's `api`, so no type annotations are required:
 
-- Path parameter `req.params`
+- Path parameters `req.params`
   - As per MSW's behavior, the type of value is always `string`.
 - Request body `req.body`
   - Note that for `await req.json()`, [the type is always `any`](https://github.com/mswjs/msw/issues/1318#issuecomment-1205149710).
@@ -95,6 +95,29 @@ const handler = typedRest.products._productId.images.$post((req, res, ctx) => {
     ctx.json({ id: 123, ...req.body }), // Response body is also typed ✅
   );
 });
+```
+
+## FAQ
+
+### Is it compatible with MSW 2.x?
+
+Not yet, but [it's planned](https://github.com/mashabow/mswpida/issues/13).
+
+### How can I return an error response without getting a type error?
+
+By using method with a type parameter like `.$get<T>()` or `.$post<T>()`, you can return `T` as the response body without getting a type error.
+
+```ts
+type ErrorResponseBody = { errorCode: string };
+
+const handler = typedRest.products._productId.images.$post<ErrorResponseBody>(
+  (req, res, ctx) => {
+    if (req.params.productId === 'bad_id') {
+      return res(ctx.status(404), ctx.json({ errorCode: 'product_not_found' }));
+    }
+    return res(ctx.status(201), ctx.json({ id: 123, ...req.body }));
+  },
+);
 ```
 
 ## License
