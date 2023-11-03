@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@aspida/fetch": "^1.14.0",
+    "@changesets/cli": "^2.26.2",
     "@tsconfig/node20": "^20.1.2",
     "@tsconfig/strictest": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
