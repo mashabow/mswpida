@@ -4,4 +4,19 @@
 
 ### Minor Changes
 
-- [#28](https://github.com/mashabow/mswpida/pull/28) [`461d6a2`](https://github.com/mashabow/mswpida/commit/461d6a2ee7f5f24592c35eb5af820e449dd953ca) Thanks [@mashabow](https://github.com/mashabow)! - Now you can specify an alternative response body type with a type prameter, e.g. `.get<T>()`
+- [#27](https://github.com/mashabow/mswpida/pull/27) [`9eea7e4`](https://github.com/mashabow/mswpida/commit/9eea7e458876a045a07f18418b149af0241670ff) Thanks [@mashabow](https://github.com/mashabow)! - Now you can specify an alternative response body type with a type parameter, e.g. `.get<T>()`
+
+## 0.1.0
+
+- Rename the main function to `createTypedRest`
+- Infer path parameter types
+- Change path parameter notation from `._foo()` to `._foo`
+- Add detailed README
+
+## 0.0.2
+
+- Add missing `main` property to `package.json`
+
+## 0.0.1
+
+- Initial release
