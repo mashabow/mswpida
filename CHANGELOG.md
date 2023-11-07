@@ -1,5 +1,11 @@
 # mswpida
 
+## 1.0.0
+
+### Major Changes
+
+- [#32](https://github.com/mashabow/mswpida/pull/32) [`f35a123`](https://github.com/mashabow/mswpida/commit/f35a123b689d5c8b9a9572833ec9f42f25411fd5) Thanks [@mashabow](https://github.com/mashabow)! - First major release. No breaking changes from the previous version.
+
 ## 0.2.0
 
 ### Minor Changes
