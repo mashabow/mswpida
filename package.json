@@ -32,7 +32,8 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
     "lint:tsc": "tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest",
+    "release": "pnpm build && changesets publish"
   },
   "devDependencies": {
     "@aspida/fetch": "^1.14.0",
