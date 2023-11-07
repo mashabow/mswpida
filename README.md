@@ -1,4 +1,4 @@
-# mswpida
+# mswpida [![npm version](https://img.shields.io/npm/v/mswpida.svg)](https://www.npmjs.com/package/mswpida)
 
 A wrapper to use MSW in a type-safe manner for aspida users.
 
