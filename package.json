@@ -33,7 +33,7 @@
     "lint:prettier": "prettier --check .",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest",
-    "release": "pnpm build && changesets publish"
+    "release": "pnpm build && changeset publish"
   },
   "devDependencies": {
     "@aspida/fetch": "^1.14.0",
