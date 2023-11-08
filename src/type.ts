@@ -54,8 +54,20 @@ type TypedRestMethod<TApiInstance extends ApiInstance> = Extract<
   $LowerHttpMethod
 >;
 
-type RequestBodyOf<T$MethodFetch extends $MethodFetch> =
-  Parameters<T$MethodFetch>[0]['body'];
+// https://qiita.com/access3151fq/items/bf5c0e165a33ed6f03a5
+type IsAny<T> = 0 extends 1 & T ? true : false;
+type IsUnknown<T> = IsAny<T> extends true
+  ? false
+  : unknown extends T
+  ? true
+  : false;
+
+type RequestBodyOf<T$MethodFetch extends $MethodFetch> = IsUnknown<
+  Parameters<T$MethodFetch>[0]['body']
+> extends true
+  ? undefined
+  : Parameters<T$MethodFetch>[0]['body'];
+
 type ResponseBodyOf<T$MethodFetch extends $MethodFetch> = Awaited<
   ReturnType<T$MethodFetch>
 >;
