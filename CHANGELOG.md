@@ -1,5 +1,11 @@
 # mswpida
 
+## 1.0.1
+
+### Patch Changes
+
+- [#34](https://github.com/mashabow/mswpida/pull/34) [`13dae75`](https://github.com/mashabow/mswpida/commit/13dae75f754565f17e9760cf694046c93929d7df) Thanks [@mashabow](https://github.com/mashabow)! - Infer `req.body` as `undefined` for no request body APIs, rather than as `unknown`
+
 ## 1.0.0
 
 ### Major Changes
