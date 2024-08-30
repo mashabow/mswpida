@@ -41,6 +41,7 @@
     "@changesets/cli": "^2.26.2",
     "@tsconfig/node20": "^20.1.2",
     "@tsconfig/strictest": "^2.0.2",
+    "@types/node": "^20.16.2",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "aspida": "^1.14.0",
