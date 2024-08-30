@@ -1,4 +1,4 @@
-import { ResponseResolver, rest } from 'msw';
+import { ResponseResolver, http } from 'msw';
 import { LowerHttpMethod } from 'aspida';
 import {
   $LowerHttpMethod,
@@ -46,7 +46,8 @@ function createTypedRestFromApiInstance<
           const path = (apiInstance as Endpoint).$path();
           return {
             ...acc,
-            [key]: (resolver: ResponseResolver) => rest[method](path, resolver),
+            // TODO: 引数に options? 追加
+            [key]: (resolver: ResponseResolver) => http[method](path, resolver),
           };
         }
 

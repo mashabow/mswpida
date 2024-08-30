@@ -1,6 +1,7 @@
 import aspida from '@aspida/fetch';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { HttpResponse } from 'msw';
 import { createTypedRest } from '../src';
 import { Api } from '../src/type';
 import petStoreApi from './generated-api/$api';
@@ -66,12 +67,9 @@ describe('createTypedRest', () => {
       test('作成した request handler が正しく動く', async () => {
         const typedRest = createTypedRest(petStoreApi);
         server.use(
-          typedRest.pets._id.$get((req, res, ctx) => {
-            const petId = req.params.id;
-            return res(
-              ctx.status(200),
-              ctx.json({ id: Number(petId), name: 'Foo' }),
-            );
+          typedRest.pets._id.$get(({ params }) => {
+            const petId = params.id;
+            return HttpResponse.json({ id: Number(petId), name: 'Foo' });
           }),
         );
 
@@ -85,18 +83,15 @@ describe('createTypedRest', () => {
         const typedRest = createTypedRest(petStoreApi);
         type ErrorResponseBody = { errorCode: string };
         server.use(
-          typedRest.pets._id.$get<ErrorResponseBody>((req, res, ctx) => {
-            const petId = req.params.id;
+          typedRest.pets._id.$get<ErrorResponseBody>(({ params }) => {
+            const petId = params.id;
             if (petId === 'bad_id') {
-              return res(
-                ctx.status(404),
-                ctx.json({ errorCode: 'resource_not_found' }),
+              return HttpResponse.json(
+                { errorCode: 'resource_not_found' },
+                { status: 404 },
               );
             }
-            return res(
-              ctx.status(200),
-              ctx.json({ id: Number(petId), name: 'Foo' }),
-            );
+            return HttpResponse.json({ id: Number(petId), name: 'Foo' });
           }),
         );
 
@@ -112,12 +107,9 @@ describe('createTypedRest', () => {
         });
 
         server.use(
-          typedRest.pets._id.$get((req, res, ctx) => {
-            const petId = req.params.id;
-            return res(
-              ctx.status(200),
-              ctx.json({ id: Number(petId), name: 'Foo' }),
-            );
+          typedRest.pets._id.$get(({ params }) => {
+            const petId = params.id;
+            return HttpResponse.json({ id: Number(petId), name: 'Foo' });
           }),
         );
 
