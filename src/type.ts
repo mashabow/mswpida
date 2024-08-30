@@ -45,10 +45,10 @@ export type Api<TApiInstance extends ApiInstance = ApiInstance> = ({
 }: AspidaClient<unknown>) => TApiInstance;
 
 //
-// mswpida が生成する typedRest の型
+// mswpida が生成する typedHttp の型
 //
 
-type TypedRestMethod<TApiInstance extends ApiInstance> = Extract<
+type TypedHttpMethod<TApiInstance extends ApiInstance> = Extract<
   keyof TApiInstance,
   $LowerHttpMethod
 >;
@@ -85,16 +85,16 @@ type HandlerCreator<
   >,
 ) => RequestHandler;
 
-type EndpointTypedRest<
+type EndpointTypedHttp<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in TypedRestMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
+  [K in TypedHttpMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
     ? HandlerCreator<TApiInstance[K], TPathParamName>
     : never;
 } & { $path: () => string };
 
-type NonEndpointTypedRestKey<TApiInstance extends ApiInstance> = Exclude<
+type NonEndpointTypedHttpKey<TApiInstance extends ApiInstance> = Exclude<
   keyof TApiInstance,
   keyof Endpoint | number | symbol
 >;
@@ -104,22 +104,22 @@ type ExtractPathParamName<TPathParamFunctionName extends string> =
     ? TPathParamName
     : never;
 
-type NonEndpointTypedRest<
+type NonEndpointTypedHttp<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in NonEndpointTypedRestKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
-    ? TypedRest<TApiInstance[K], TPathParamName>
+  [K in NonEndpointTypedHttpKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
+    ? TypedHttp<TApiInstance[K], TPathParamName>
     : TApiInstance[K] extends PathParamFunction
-    ? TypedRest<
+    ? TypedHttp<
         ReturnType<TApiInstance[K]>,
         TPathParamName | ExtractPathParamName<K>
       >
     : never;
 };
 
-export type TypedRest<
+export type TypedHttp<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
-> = NonEndpointTypedRest<TApiInstance, TPathParamName> &
-  EndpointTypedRest<TApiInstance, TPathParamName>;
+> = NonEndpointTypedHttp<TApiInstance, TPathParamName> &
+  EndpointTypedHttp<TApiInstance, TPathParamName>;

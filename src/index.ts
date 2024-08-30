@@ -5,7 +5,7 @@ import {
   ApiInstance,
   Api,
   Endpoint,
-  TypedRest,
+  TypedHttp,
 } from './type';
 
 const METHODS = [
@@ -27,10 +27,10 @@ const $METHODS = [
   '$options',
 ] satisfies $LowerHttpMethod[];
 
-function createTypedRestFromApiInstance<
+function createTypedHttpFromApiInstance<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
->(apiInstance: TApiInstance): TypedRest<TApiInstance, TPathParamName> {
+>(apiInstance: TApiInstance): TypedHttp<TApiInstance, TPathParamName> {
   // @ts-expect-error TODO: 型エラー修正
   return Object.entries(apiInstance).reduce(
     // @ts-expect-error TODO: 型エラー修正
@@ -63,7 +63,7 @@ function createTypedRestFromApiInstance<
           const childApiInstance = value(`:${paramName}`) as ApiInstance;
           return {
             ...acc,
-            [key]: createTypedRestFromApiInstance(childApiInstance),
+            [key]: createTypedHttpFromApiInstance(childApiInstance),
           };
         }
 
@@ -71,21 +71,21 @@ function createTypedRestFromApiInstance<
       }
 
       // サブパスのモックを再帰的に作る
-      return { ...acc, [key]: createTypedRestFromApiInstance(value) };
+      return { ...acc, [key]: createTypedHttpFromApiInstance(value) };
     },
-    {} as TypedRest<TApiInstance, TPathParamName>,
+    {} as TypedHttp<TApiInstance, TPathParamName>,
   );
 }
 
-export function createTypedRest<TApiInstance extends ApiInstance>(
+export function createTypedHttp<TApiInstance extends ApiInstance>(
   api: Api<TApiInstance>,
   options?: { baseURL?: string },
-): TypedRest<TApiInstance, never> {
+): TypedHttp<TApiInstance, never> {
   const apiInstance = api({
     baseURL: options?.baseURL,
     // @ts-expect-error 使わないので適当な関数を渡しておく
     fetch: () => 'dummy',
   });
 
-  return createTypedRestFromApiInstance(apiInstance);
+  return createTypedHttpFromApiInstance(apiInstance);
 }
