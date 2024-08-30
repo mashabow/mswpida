@@ -6,10 +6,9 @@ import type {
 } from 'aspida';
 import type {
   DefaultBodyType,
-  ResponseResolver,
-  RestContext,
-  RestHandler,
-  RestRequest,
+  HttpResponseResolver,
+  PathParams,
+  RequestHandler,
 } from 'msw';
 
 export type $LowerHttpMethod = `$${LowerHttpMethod}`;
@@ -46,10 +45,10 @@ export type Api<TApiInstance extends ApiInstance = ApiInstance> = ({
 }: AspidaClient<unknown>) => TApiInstance;
 
 //
-// mswpida が生成する typedRest の型
+// mswpida が生成する typedHttp の型
 //
 
-type TypedRestMethod<TApiInstance extends ApiInstance> = Extract<
+type TypedHttpMethod<TApiInstance extends ApiInstance> = Extract<
   keyof TApiInstance,
   $LowerHttpMethod
 >;
@@ -79,28 +78,23 @@ type HandlerCreator<
   /** aspida で指定された型以外のレスポンスボディを返したい場合は、この型パラメータを使う */
   TAlternativeResponseBody extends DefaultBodyType = never,
 >(
-  resolver: ResponseResolver<
-    RestRequest<
-      RequestBodyOf<T$MethodFetch>,
-      // aspida 的にはパスパラメータの値は string | number だが、
-      // msw の req.params では常に string になる
-      Record<TPathParamName, string>
-    >,
-    RestContext,
+  resolver: HttpResponseResolver<
+    PathParams<TPathParamName>,
+    RequestBodyOf<T$MethodFetch>,
     ResponseBodyOf<T$MethodFetch> | TAlternativeResponseBody
   >,
-) => RestHandler;
+) => RequestHandler;
 
-type EndpointTypedRest<
+type EndpointTypedHttp<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in TypedRestMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
+  [K in TypedHttpMethod<TApiInstance>]: TApiInstance[K] extends $MethodFetch
     ? HandlerCreator<TApiInstance[K], TPathParamName>
     : never;
 } & { $path: () => string };
 
-type NonEndpointTypedRestKey<TApiInstance extends ApiInstance> = Exclude<
+type NonEndpointTypedHttpKey<TApiInstance extends ApiInstance> = Exclude<
   keyof TApiInstance,
   keyof Endpoint | number | symbol
 >;
@@ -110,22 +104,22 @@ type ExtractPathParamName<TPathParamFunctionName extends string> =
     ? TPathParamName
     : never;
 
-type NonEndpointTypedRest<
+type NonEndpointTypedHttp<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
 > = {
-  [K in NonEndpointTypedRestKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
-    ? TypedRest<TApiInstance[K], TPathParamName>
+  [K in NonEndpointTypedHttpKey<TApiInstance>]: TApiInstance[K] extends ApiInstance
+    ? TypedHttp<TApiInstance[K], TPathParamName>
     : TApiInstance[K] extends PathParamFunction
-    ? TypedRest<
+    ? TypedHttp<
         ReturnType<TApiInstance[K]>,
         TPathParamName | ExtractPathParamName<K>
       >
     : never;
 };
 
-export type TypedRest<
+export type TypedHttp<
   TApiInstance extends ApiInstance,
   TPathParamName extends string,
-> = NonEndpointTypedRest<TApiInstance, TPathParamName> &
-  EndpointTypedRest<TApiInstance, TPathParamName>;
+> = NonEndpointTypedHttp<TApiInstance, TPathParamName> &
+  EndpointTypedHttp<TApiInstance, TPathParamName>;
