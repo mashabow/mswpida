@@ -6,10 +6,9 @@ import type {
 } from 'aspida';
 import type {
   DefaultBodyType,
-  ResponseResolver,
-  RestContext,
-  RestHandler,
-  RestRequest,
+  HttpResponseResolver,
+  PathParams,
+  RequestHandler,
 } from 'msw';
 
 export type $LowerHttpMethod = `$${LowerHttpMethod}`;
@@ -79,17 +78,12 @@ type HandlerCreator<
   /** aspida で指定された型以外のレスポンスボディを返したい場合は、この型パラメータを使う */
   TAlternativeResponseBody extends DefaultBodyType = never,
 >(
-  resolver: ResponseResolver<
-    RestRequest<
-      RequestBodyOf<T$MethodFetch>,
-      // aspida 的にはパスパラメータの値は string | number だが、
-      // msw の req.params では常に string になる
-      Record<TPathParamName, string>
-    >,
-    RestContext,
+  resolver: HttpResponseResolver<
+    PathParams<TPathParamName>,
+    RequestBodyOf<T$MethodFetch>,
     ResponseBodyOf<T$MethodFetch> | TAlternativeResponseBody
   >,
-) => RestHandler;
+) => RequestHandler;
 
 type EndpointTypedRest<
   TApiInstance extends ApiInstance,
