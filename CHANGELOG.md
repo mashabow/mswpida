@@ -1,5 +1,11 @@
 # mswpida
 
+## 2.0.0
+
+### Major Changes
+
+- [#38](https://github.com/mashabow/mswpida/pull/38) [`f6e6da9`](https://github.com/mashabow/mswpida/commit/f6e6da9cdd9948e743ee7311aea8bfd7dc31af04) Thanks [@mashabow](https://github.com/mashabow)! - Now supports MSW v2 with aligned APIs, and has discontinued support for MSW v1.
+
 ## 1.0.1
 
 ### Patch Changes
