@@ -2,9 +2,9 @@
 
 MSW を型安全に使うための、aspida ユーザー向けのラッパー
 
-- Simple.
-- Type safe.
-- Aspida-like interface.
+- Simple
+- Type safe
+- Aspida-like interface
 
 [English](./README.md) / [日本語](./README.ja.md)
 
@@ -17,52 +17,62 @@ npm install mswpida --save-dev
 ## 使い方
 
 ```ts
-import { createTypedRest } from 'mswpida';
+// 1. aspida で生成した `api` 関数から `typedHttp` を作る
+
+import { createTypedHttp } from 'mswpida';
 import api from './awesome/store/$api';
 
-// 1. aspida で生成した `api` 関数から `typedRest` を作る
-const typedRest = createTypedRest(api);
+const typedHttp = createTypedHttp(api);
 
-// 2. `typedRest` を使って MSW の request handler を書く
+// 2. `typedHttp` を使って MSW の request handler を書く
+
+import { HttpResponse } from 'msw';
+
 const handlers = [
-  typedRest.products._productId.images.$post((req, res, ctx) => {
-    console.log(`Add an image to product ${req.params.productId}`); // パスパラメータに型がついている ✅
-    console.log(`Image description: ${req.body.description}`); // リクエストボディに型がついている ✅
-    return res(
-      ctx.status(201),
-      ctx.json({ id: 123, ...req.body }), // レスポンスボディにも型がついている ✅
+  typedHttp.products._productId.images.$post(({ request, params }) => {
+    console.log(`Add an image to product ${params.productId}`); // パスパラメータに型がついている ✅
+
+    const reqBody = await request.json();
+    console.log(`Image description: ${reqBody.description}`); // リクエストボディに型がついている ✅
+
+    return HttpResponse.json(
+      { id: 123, ...reqBody }, // レスポンスボディにも型がついている ✅
+      { status: 201 },
     );
   }),
   // ...
 ];
 
 // 3. 以降は通常の MSW の使い方と同様
-import { setupWorker } from 'msw'; // or `setupServer`
+
+import { setupWorker } from 'msw/browser';
+// or
+// import { setupServer } from 'msw/node';
 
 await setupWorker(...handlers).start();
 ```
 
-### `createTypedRest(api, options?)`
+### `createTypedHttp(api, options?)`
 
-aspida で生成した `api` 関数を元にして、`typedRest` というオブジェクトを作成します。この `typedRest` は、MSW の [request handler](https://v1.mswjs.io/docs/basics/request-handler) を書くためのラッパーです。
+aspida で生成した `api` 関数を元にして、`typedHttp` というオブジェクトを作成します。この `typedHttp` は、MSW の [request handler](https://mswjs.io/docs/concepts/request-handler) を書くためのラッパーです。
 
 #### オプション
 
 - `baseURL` (optional): API のベース URL を指定します。aspida の `baseURL` オプションと同様です。
 
 ```ts
-createTypedRest(api, { baseURL: 'https://staging.example.com' });
+createTypedHttp(api, { baseURL: 'https://staging.example.com' });
 ```
 
-### `typedRest`
+### `typedHttp`
 
-MSW の [request handler](https://v1.mswjs.io/docs/basics/request-handler) を書くためのオブジェクトで、実態としては MSW の [`rest`](https://v1.mswjs.io/docs/api/rest) の薄いラッパーです。[`rest`](https://v1.mswjs.io/docs/api/rest) とほぼ同じ使い方ですが、パスやメソッドは aspida のような形式で表現します。
+MSW の [request handler](https://mswjs.io/docs/concepts/request-handler) を書くためのオブジェクトで、実態としては MSW の [`http`](https://mswjs.io/docs/api/http) の薄いラッパーです。使い方は `http` とほぼ同じですが、パスやメソッドは aspida のような形式で表現します。
 
 ```ts
-const handler = typedRest.products._productId.images.$post((req, res, ctx) => ...);
+const handler = typedHttp.products._productId.images.$post(({ request, params }) => ...);
 
 // これは以下と同等
-const handler = rest.post('https://example.com/products/:productId/images', (req, res, ctx) => ...);
+const handler = http.post('https://example.com/products/:productId/images', ({ request, params }) => ...);
 ```
 
 #### パス
@@ -72,36 +82,36 @@ const handler = rest.post('https://example.com/products/:productId/images', (req
 `.$path()` を使うと、そのエンドポイントのパスを文字列として取得できます。
 
 ```ts
-const path = typedRest.products._productId.images.$path();
+const path = typedHttp.products._productId.images.$path();
 // -> 'https://example.com/products/:productId/images'
 ```
 
 #### メソッド
 
-`.$get(resolver)` や `.$post(resolver)` など、HTTP メソッドに `$` を付けた関数で表現します。引数は MSW の [response resolver](https://v1.mswjs.io/docs/basics/response-resolver) ですが、aspida の `api` から導出した具体的な型が以下の3つについているため、型注釈を書く必要はありません。
+`.$get(resolver)` や `.$post(resolver)` など、HTTP メソッドに `$` を付けた関数で表現します。引数は MSW の [response resolver](https://mswjs.io/docs/concepts/response-resolver) ですが、aspida の `api` から導出した具体的な型が以下の3つについているため、型注釈を書く必要はありません。
 
-- パスパラメータ `req.params`
+- パスパラメータ：[`params`](https://mswjs.io/docs/network-behavior/rest#reading-path-parameters)
   - MSW の仕様上、値の型は常に `string` になります。
-- リクエストボディ `req.body`
-  - ただし `await req.json()` の方には型はつかず、[常に `any` になります](https://github.com/mswjs/msw/issues/1318#issuecomment-1205149710)。
-- レスポンスボディ `res(ctx.json())`
+- リクエストボディ：[`await request.json()`](https://mswjs.io/docs/network-behavior/rest#reading-request-body)
+- レスポンスボディ：[`HttpResponse.json()`](https://mswjs.io/docs/api/http-response#httpresponsejsonbody-init) の第1引数
 
 ```ts
-const handler = typedRest.products._productId.images.$post((req, res, ctx) => {
-  console.log(`Add an image to product ${req.params.productId}`); // パスパラメータに型がついている ✅
-  console.log(`Image description: ${req.body.description}`); // リクエストボディに型がついている ✅
-  return res(
-    ctx.status(201),
-    ctx.json({ id: 123, ...req.body }), // レスポンスボディにも型がついている ✅
-  );
-});
+const handler = typedHttp.products._productId.images.$post(
+  ({ request, params }) => {
+    console.log(`Add an image to product ${params.productId}`); // パスパラメータに型がついている ✅
+
+    const reqBody = await request.json();
+    console.log(`Image description: ${reqBody.description}`); // リクエストボディに型がついている ✅
+
+    return HttpResponse.json(
+      { id: 123, ...reqBody }, // レスポンスボディにも型がついている ✅
+      { status: 201 },
+    );
+  },
+);
 ```
 
 ## FAQ
-
-### MSW 2.x には対応していますか？
-
-まだ対応していませんが、[対応予定です](https://github.com/mashabow/mswpida/issues/13)。
 
 ### エラーレスポンスなど、正常系以外のレスポンスボディを返そうとすると型エラーになります。
 
@@ -110,15 +120,23 @@ const handler = typedRest.products._productId.images.$post((req, res, ctx) => {
 ```ts
 type ErrorResponseBody = { errorCode: string };
 
-const handler = typedRest.products._productId.images.$post<ErrorResponseBody>(
-  (req, res, ctx) => {
-    if (req.params.productId === 'bad_id') {
-      return res(ctx.status(404), ctx.json({ errorCode: 'product_not_found' }));
+const handler = typedHttp.products._productId.images.$post<ErrorResponseBody>(
+  ({ request, params }) => {
+    if (params.productId === 'bad_id') {
+      return HttpResponse.json(
+        { errorCode: 'product_not_found' },
+        { status: 404 },
+      );
     }
-    return res(ctx.status(201), ctx.json({ id: 123, ...req.body }));
+    const reqBody = await request.json();
+    return HttpResponse.json({ id: 123, ...reqBody }, { status: 201 });
   },
 );
 ```
+
+### MSW v1 と一緒に使えますか？
+
+mswpida v1 を使ってください。
 
 ## ライセンス
 
