@@ -3,8 +3,8 @@ name: CI
 on: push
 
 jobs:
-  eslint:
-    name: ESLint
+  biome:
+    name: Lint and Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,20 +14,7 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm lint:eslint
-
-  prettier:
-    name: Prettier
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm lint:prettier
+      - run: pnpm lint:biome
 
   tsc:
     name: Type Check
