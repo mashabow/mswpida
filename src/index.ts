@@ -32,50 +32,46 @@ function createTypedHttpFromApiInstance<
 	TPathParamName extends string,
 >(apiInstance: TApiInstance): TypedHttp<TApiInstance, TPathParamName> {
 	// @ts-expect-error TODO: 型エラー修正
-	return Object.entries(apiInstance).reduce(
+	return Object.fromEntries(
 		// @ts-expect-error TODO: 型エラー修正
-		(acc, [key, value]) => {
-			if (value instanceof Function) {
-				if (key === "$path") {
-					return { ...acc, $path: value };
+		Object.entries(apiInstance)
+			.map(([key, value]) => {
+				if (value instanceof Function) {
+					if (key === "$path") {
+						return ["$path", value];
+					}
+
+					if ($METHODS.includes(key as $LowerHttpMethod)) {
+						// そのメソッドのモック生成関数を返す
+						const method = key.substring(1) as LowerHttpMethod;
+						const path = (apiInstance as Endpoint).$path();
+						return [
+							key,
+							(resolver: ResponseResolver, options?: RequestHandlerOptions) =>
+								http[method](path, resolver, options),
+						];
+					}
+
+					if (METHODS.includes(key as LowerHttpMethod)) {
+						// `$` 無しのメソッドは、モックには用意しない
+						return null;
+					}
+
+					if (key.startsWith("_")) {
+						// 次の階層がパスパラメータ（e.g. `_foo`）の場合、パスを MSW の形式（`:foo`）に変換した上で、再帰的にモックを作る
+						const paramName = key.substring(1);
+						// @ts-expect-error TODO: 型エラー修正
+						const childApiInstance = value(`:${paramName}`) as ApiInstance;
+						return [key, createTypedHttpFromApiInstance(childApiInstance)];
+					}
+
+					return null; // ここには来ないはず
 				}
 
-				if ($METHODS.includes(key as $LowerHttpMethod)) {
-					// そのメソッドのモック生成関数を返す
-					const method = key.substring(1) as LowerHttpMethod;
-					const path = (apiInstance as Endpoint).$path();
-					return {
-						...acc,
-						[key]: (
-							resolver: ResponseResolver,
-							options?: RequestHandlerOptions,
-						) => http[method](path, resolver, options),
-					};
-				}
-
-				if (METHODS.includes(key as LowerHttpMethod)) {
-					// `$` 無しのメソッドは、モックには用意しない
-					return acc;
-				}
-
-				if (key.startsWith("_")) {
-					// 次の階層がパスパラメータ（e.g. `_foo`）の場合、パスを MSW の形式（`:foo`）に変換した上で、再帰的にモックを作る
-					const paramName = key.substring(1);
-					// @ts-expect-error TODO: 型エラー修正
-					const childApiInstance = value(`:${paramName}`) as ApiInstance;
-					return {
-						...acc,
-						[key]: createTypedHttpFromApiInstance(childApiInstance),
-					};
-				}
-
-				return acc; // ここには来ないはず
-			}
-
-			// サブパスのモックを再帰的に作る
-			return { ...acc, [key]: createTypedHttpFromApiInstance(value) };
-		},
-		{} as TypedHttp<TApiInstance, TPathParamName>,
+				// サブパスのモックを再帰的に作る
+				return [key, createTypedHttpFromApiInstance(value)];
+			})
+			.filter((entry) => entry !== null),
 	);
 }
 
