@@ -1,5 +1,11 @@
 # mswpida
 
+## 2.0.1
+
+### Patch Changes
+
+- [#40](https://github.com/mashabow/mswpida/pull/40) [`618347d`](https://github.com/mashabow/mswpida/commit/618347de960b67553286cf8c8dabb0952a7bcff7) Thanks [@mashabow](https://github.com/mashabow)! - Migrate ESLint and Prettier to Biome
+
 ## 2.0.0
 
 ### Major Changes
