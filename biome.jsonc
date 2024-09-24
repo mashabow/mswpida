@@ -47,5 +47,14 @@
 		"formatter": {
 			"quoteStyle": "double"
 		}
-	}
+	},
+	"overrides": [
+		{
+			// pnpm add/remove したときに崩れないように、pnpm と同じフォーマットにする
+			"include": ["package.json"],
+			"formatter": {
+				"lineWidth": 1
+			}
+		}
+	]
 }

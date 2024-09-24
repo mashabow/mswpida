@@ -2,7 +2,11 @@
 	"name": "mswpida",
 	"version": "2.0.0",
 	"description": "A wrapper to use MSW in a type-safe manner for aspida users.",
-	"keywords": ["msw", "aspida", "typescript"],
+	"keywords": [
+		"msw",
+		"aspida",
+		"typescript"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/mashabow/mswpida.git"
@@ -18,7 +22,10 @@
 		}
 	},
 	"main": "dist/index.js",
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"generate:example-api": "openapi2aspida -i https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.1.0/examples/v3.0/petstore-expanded.yaml -o ./example/generated-api",
