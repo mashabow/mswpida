@@ -1,9 +1,9 @@
-import { type RequestHandlerOptions, type ResponseResolver, http } from "msw";
 import type { LowerHttpMethod } from "aspida";
+import { http, type RequestHandlerOptions, type ResponseResolver } from "msw";
 import type {
 	$LowerHttpMethod,
-	ApiInstance,
 	Api,
+	ApiInstance,
 	Endpoint,
 	TypedHttp,
 } from "./type";

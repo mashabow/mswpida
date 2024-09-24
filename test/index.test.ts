@@ -1,7 +1,7 @@
 import aspida from "@aspida/fetch";
+import { HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, test } from "vitest";
-import { HttpResponse } from "msw";
 import { createTypedHttp } from "../src";
 import type { Api } from "../src/type";
 import petStoreApi from "./generated-api/$api";
