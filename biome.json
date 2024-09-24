@@ -19,7 +19,28 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"all": true,
+			"correctness": {
+				"useImportExtensions": {
+					"level": "off"
+				}
+			},
+			"style": {
+				"useNamingConvention": {
+					"level": "warn",
+					"options": {
+						"strictCase": false,
+						"conventions": [
+							{
+								"selector": {
+									"kind": "typeParameter"
+								},
+								"match": "[A-Z]|T\\$?[A-Z][A-Za-z0-9]+"
+							}
+						]
+					}
+				}
+			}
 		}
 	},
 	"javascript": {
