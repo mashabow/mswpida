@@ -1,0 +1,60 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.2/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"ignore": ["test/generated-api/"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"all": true,
+			"correctness": {
+				"useImportExtensions": {
+					"level": "off"
+				}
+			},
+			"style": {
+				"useNamingConvention": {
+					"level": "warn",
+					"options": {
+						"strictCase": false,
+						"conventions": [
+							{
+								"selector": {
+									"kind": "typeParameter"
+								},
+								"match": "[A-Z]|T\\$?[A-Z][A-Za-z0-9]+"
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"overrides": [
+		{
+			// pnpm add/remove したときに崩れないように、pnpm と同じフォーマットにする
+			"include": ["package.json"],
+			"formatter": {
+				"lineWidth": 1
+			}
+		}
+	]
+}
