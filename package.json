@@ -1,71 +1,64 @@
 {
-  "name": "mswpida",
-  "version": "2.0.0",
-  "description": "A wrapper to use MSW in a type-safe manner for aspida users.",
-  "keywords": [
-    "msw",
-    "aspida",
-    "typescript"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mashabow/mswpida.git"
-  },
-  "license": "MIT",
-  "author": "Masaya Nakamura <mashabow@shiromoji.net>",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "main": "dist/index.js",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "generate:example-api": "openapi2aspida -i https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.1.0/examples/v3.0/petstore-expanded.yaml -o ./example/generated-api",
-    "lint:eslint": "eslint .",
-    "format": "biome format .",
-    "lint:tsc": "tsc --noEmit",
-    "test": "vitest",
-    "release": "pnpm build && changeset publish"
-  },
-  "devDependencies": {
-    "@aspida/fetch": "^1.14.0",
-    "@biomejs/biome": "1.9.2",
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.2",
-    "@tsconfig/node20": "^20.1.2",
-    "@tsconfig/strictest": "^2.0.2",
-    "@types/node": "^20.16.2",
-    "@typescript-eslint/eslint-plugin": "^6.8.0",
-    "@typescript-eslint/parser": "^6.8.0",
-    "aspida": "^1.14.0",
-    "eslint": "^8.51.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-import": "^2.28.1",
-    "msw": "^2.4.1",
-    "openapi2aspida": "^0.23.2",
-    "tsup": "7.2.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
-  },
-  "peerDependencies": {
-    "aspida": "^1.14.0",
-    "msw": "^2.4.1"
-  },
-  "packageManager": "pnpm@8.9.0",
-  "pnpm": {
-    "overrides": {
-      "tsconfig-paths": "^4.0.0"
-    }
-  },
-  "readme": "https://github.com/mashabow/mswpida#readme"
+	"name": "mswpida",
+	"version": "2.0.0",
+	"description": "A wrapper to use MSW in a type-safe manner for aspida users.",
+	"keywords": ["msw", "aspida", "typescript"],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mashabow/mswpida.git"
+	},
+	"license": "MIT",
+	"author": "Masaya Nakamura <mashabow@shiromoji.net>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"main": "dist/index.js",
+	"files": ["dist", "src"],
+	"scripts": {
+		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"generate:example-api": "openapi2aspida -i https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.1.0/examples/v3.0/petstore-expanded.yaml -o ./example/generated-api",
+		"lint:eslint": "eslint .",
+		"format": "biome format .",
+		"lint:tsc": "tsc --noEmit",
+		"test": "vitest",
+		"release": "pnpm build && changeset publish"
+	},
+	"devDependencies": {
+		"@aspida/fetch": "^1.14.0",
+		"@biomejs/biome": "1.9.2",
+		"@changesets/changelog-github": "^0.4.8",
+		"@changesets/cli": "^2.26.2",
+		"@tsconfig/node20": "^20.1.2",
+		"@tsconfig/strictest": "^2.0.2",
+		"@types/node": "^20.16.2",
+		"@typescript-eslint/eslint-plugin": "^6.8.0",
+		"@typescript-eslint/parser": "^6.8.0",
+		"aspida": "^1.14.0",
+		"eslint": "^8.51.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
+		"eslint-plugin-import": "^2.28.1",
+		"msw": "^2.4.1",
+		"openapi2aspida": "^0.23.2",
+		"tsup": "7.2.0",
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.6"
+	},
+	"peerDependencies": {
+		"aspida": "^1.14.0",
+		"msw": "^2.4.1"
+	},
+	"packageManager": "pnpm@8.9.0",
+	"pnpm": {
+		"overrides": {
+			"tsconfig-paths": "^4.0.0"
+		}
+	},
+	"readme": "https://github.com/mashabow/mswpida#readme"
 }
