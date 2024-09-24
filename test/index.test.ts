@@ -3,7 +3,7 @@ import { setupServer } from "msw/node";
 import { afterAll, afterEach, beforeAll, describe, expect, test } from "vitest";
 import { HttpResponse } from "msw";
 import { createTypedHttp } from "../src";
-import { Api } from "../src/type";
+import type { Api } from "../src/type";
 import petStoreApi from "./generated-api/$api";
 
 describe("createTypedHttp", () => {
